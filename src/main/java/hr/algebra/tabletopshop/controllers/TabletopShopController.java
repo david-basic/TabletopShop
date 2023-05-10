@@ -1,49 +1,36 @@
 package hr.algebra.tabletopshop.controllers;
 
 import hr.algebra.tabletopshop.domain.Boardgame;
-import hr.algebra.tabletopshop.dto.BoardgameDto;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import hr.algebra.tabletopshop.repository.BoardgameRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
-@RestController
-@RequestMapping("api/v1")
+@Controller
+@RequestMapping("/")
+@AllArgsConstructor
 public class TabletopShopController {
+    private BoardgameRepository bgRepo;
 
-    @GetMapping("/boardgames")
-    public List<BoardgameDto> GetAllBoardgames() {
-        return generateBoardgames();
+    @GetMapping("")
+    public String getBoardgames(Model model) {
+        model.addAttribute("boardgames", bgRepo.getAllBoardgames());
+        return "homePage/home";
     }
 
-    @GetMapping("boardgames/{boardgameId}")
-    public BoardgameDto getBoardgameById(@PathVariable String boardgameId) {
-        return generateBoardgames().stream()
-                .filter(bg -> bg.getId().equals(Integer.parseInt(boardgameId)))
-                .toList().get(0);
+    @PostMapping("new")
+    public String saveNewBoardgame(@ModelAttribute Boardgame newBg, Model model){
+        System.out.println("New bg: " + newBg.getName());
+
+        List<Boardgame> boardgames = (List<Boardgame>) model.getAttribute("boardgames");
+        Objects.requireNonNull(boardgames).add(newBg);
+
+        model.addAttribute("newBg", newBg);
+        return "homePage/home";
     }
 
-    private List<BoardgameDto> generateBoardgames() {
-        Boardgame game1 = new Boardgame(
-                1, "Agricola", 2016, 8.0, 3.47, 120, new BigDecimal(50)
-        );
-        Boardgame game2 = new Boardgame(
-                2, "7 Wonders", 2020, 7.9, 2.17, 30, new BigDecimal(60)
-        );
-        Boardgame game3 = new Boardgame(
-                3, "Ankh", 2021, 7.9, 3.08, 90, new BigDecimal(250)
-        );
-
-        List<BoardgameDto> boardgameDtoList = new ArrayList<>();
-        boardgameDtoList.add(new BoardgameDto(game1));
-        boardgameDtoList.add(new BoardgameDto(game2));
-        boardgameDtoList.add(new BoardgameDto(game3));
-
-        return boardgameDtoList;
-    }
 }

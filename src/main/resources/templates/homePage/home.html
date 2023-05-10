@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}"/>
+</head>
+<body style="height: 100vh;" class="d-flex text-center text-bg-dark">
+<div class="d-flex w-100 h-100 mx-auto flex-column">
+    <div class="mb-auto" th:insert="~{/fragments/header :: header}"></div>
+
+    <main class="container">
+        <h1>HOME!</h1>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Year</th>
+                <th>Rating</th>
+                <th>Weight</th>
+                <th>Playing time</th>
+                <th>Price</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${boardgames.empty}">
+                <td colspan="2"> No Games Available</td>
+            </tr>
+            <tr th:each="bg : ${boardgames}">
+                <td><span th:text="${bg.id}"> Id </span></td>
+                <td><span th:text="${bg.name}"> Name </span></td>
+                <td><span th:text="${bg.year}"> Year </span></td>
+                <td><span th:text="${bg.rating}"> Rating </span></td>
+                <td><span th:text="${bg.weight}"> Weight </span></td>
+                <td><span th:text="${bg.playingTime}"> Playing time </span></td>
+                <td><span th:text="${bg.price}"> Price </span></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="container">
+            <form th:action="@{/new}" th:object="${newBg}" method="post">
+                <label>
+                    Id:
+                    <input type="number" th:field="*{id}"/>
+                </label>
+                <label>
+                    Name:
+                    <input type="text" th:field="*{name}"/>
+                </label>
+                <label>
+                    Production year:
+                    <input type="number" th:field="*{year}"/>
+                </label>
+                <label>
+                    Rating:
+                    <input type="number" th:field="*{rating}"/>
+                </label>
+                <label>
+                    Weight (game hardness):
+                    <input type="number" th:field="*{weight}"/>
+                </label>
+                <label>
+                    Playing time:
+                    <input type="number" th:field="*{playingTime}"/>
+                </label>
+                <label>
+                    Price:
+                    <input type="number" th:field="*{price}"/>
+                </label>
+                <input type="submit"/>
+            </form>
+        </div>
+
+
+    </main>
+
+    <div class="mt-auto" th:insert="~{/fragments/footer :: footer}"></div>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
+</body>
+</html>
