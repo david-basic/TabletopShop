@@ -41,37 +41,37 @@
             </tbody>
         </table>
 
-        <div class="container">
-            <form th:action="@{/new}" th:object="${newBg}" method="post">
-                <label>
+        <div class="container ms-4 me-4">
+            <form th:action="@{/new}" th:object="${newBg}" method="post" class="list-group align-items-end">
+                <label class="list-group-item">
                     Id:
                     <input type="number" th:field="*{id}"/>
                 </label>
-                <label>
+                <label class="list-group-item">
                     Name:
                     <input type="text" th:field="*{name}"/>
                 </label>
-                <label>
+                <label class="list-group-item">
                     Production year:
                     <input type="number" th:field="*{year}"/>
                 </label>
-                <label>
+                <label class="list-group-item">
                     Rating:
-                    <input type="number" th:field="*{rating}"/>
+                    <input type="number" step=".1" min="0" max="10" th:field="*{rating}"/>
                 </label>
-                <label>
+                <label class="list-group-item">
                     Weight (game hardness):
-                    <input type="number" th:field="*{weight}"/>
+                    <input type="number" step=".1" min="0" max="5" th:field="*{weight}"/>
                 </label>
-                <label>
+                <label class="list-group-item">
                     Playing time:
                     <input type="number" th:field="*{playingTime}"/>
                 </label>
-                <label>
+                <label class="list-group-item">
                     Price:
-                    <input type="number" th:field="*{price}"/>
+                    <input type="number" step=".01" th:field="*{price}"/>
                 </label>
-                <input type="submit"/>
+                <input class="list-group-item" type="submit"/>
             </form>
         </div>
 
