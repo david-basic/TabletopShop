@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Login page</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}"/>
+</head>
+<body style="height: 100vh;" class="d-flex text-center text-bg-dark">
+<div class="d-flex w-100 h-100 mx-auto flex-column">
+<!--    <div class="mb-auto" th:insert="~{/fragments/header :: header}"></div>-->
+
+    <div class="container">
+        <main class="row">
+            <div class="row">
+                <h1>Login page</h1>
+            </div>
+            <div class="row">
+                <div th:if="${param.error}">
+                    Invalid username and password.
+                </div>
+                <div th:if="${param.logout}">
+                    You have been logged out.
+                </div>
+                <form th:action="@{/login}" method="post">
+                    <div><label> User Name : <input type="text" name="username"/> </label></div>
+                    <div><label> Password: <input type="password" name="password"/> </label></div>
+                    <div><input type="submit" value="Sign In"/></div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <div class="mt-auto" th:insert="~{/fragments/footer :: footer}"></div>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
+</body>
+</html>

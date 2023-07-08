@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Home page</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}"/>
+</head>
+<body style="height: 100vh;" class="d-flex text-center text-bg-dark">
+<div class="d-flex w-100 h-100 mx-auto flex-column">
+    <div class="mb-auto" th:insert="~{/fragments/header :: header}"></div>
+
+    <div class="container">
+        <main class="row">
+            <div class="row">
+                <div class="col">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Year</th>
+                            <th>Rating</th>
+                            <th>Weight</th>
+                            <th>Playing time</th>
+                            <th>Price</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${boardgames.empty}">
+                            <td colspan="7"> No Boardgames Available</td>
+                        </tr>
+                        <tr th:each="bg : ${boardgames}">
+                            <td><span th:text="${bg.id}"> Id </span></td>
+                            <td><span th:text="${bg.name}"> Name </span></td>
+                            <td><span th:text="${bg.published}"> Year </span></td>
+                            <td><span th:text="${bg.rating}"> Rating </span></td>
+                            <td><span th:text="${bg.weight}"> Weight </span></td>
+                            <td><span th:text="${bg.duration}"> Playing time </span></td>
+                            <td><span th:text="${bg.price}"> Price </span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="col container">
+                    <form th:action="@{/storeHome/newBoardgame.html}" th:object="${newBg}" method="post">
+                        <label>
+                            Id:
+                            <input type="number" step="1" min="0" th:field="*{id}"/>
+                        </label>
+                        <label>
+                            Name:
+                            <input type="text" th:field="*{name}" th:required="required"/>
+                        </label>
+                        <label>
+                            Production year:
+                            <input type="number" th:field="*{published}" th:required="required"/>
+                        </label>
+                        <label>
+                            Rating:
+                            <input type="number" step=".1" min="0" max="10" th:field="*{rating}"
+                                   th:required="required"/>
+                        </label>
+                        <label>
+                            Weight (game hardness):
+                            <input type="number" step=".1" min="0" max="5" th:field="*{weight}" th:required="required"/>
+                        </label>
+                        <label>
+                            Playing time:
+                            <input type="number" th:field="*{duration}" th:required="required"/>
+                        </label>
+                        <label>
+                            Price:
+                            <input type="number" step=".01" th:field="*{price}" th:required="required"/>
+                        </label>
+                        <input type="submit"/>
+                    </form>
+                </div>
+            </div>
+            <br>
+            <div class="row justify-content-center">
+                <a th:href="@{/storeHome/cleanSession.html}" class="link-dark">Clean session</a>
+            </div>
+            <div class="row">
+                <h1 th:inline="text">Hello <span th:remove="tag" sec:authentication="name">thymeleaf</span>!</h1>
+                <form th:action="@{/logout}" method="post">
+                    <input type="submit" value="Sign Out"/>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <div class="mt-auto" th:insert="~{/fragments/footer :: footer}"></div>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
+</body>
+</html>
