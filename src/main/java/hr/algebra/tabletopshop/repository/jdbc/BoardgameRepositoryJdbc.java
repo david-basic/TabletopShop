@@ -31,6 +31,18 @@ public class BoardgameRepositoryJdbc implements BoardgameRepository {
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert simpleJdbcInsert;
     
+    public BoardgameRepositoryJdbc(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName(BOARDGAMES_TABLE)
+                .usingGeneratedKeyColumns(BOARDGAMES_TABLE_ID);
+    }
+    
+    @Override
+    public List<Boardgame> getAllBoardgames() {
+        return jdbcTemplate.query(SELECT_ALL_BGS, this::mapDbRowToBoardgame);
+    }
+    
     private Boardgame mapDbRowToBoardgame(ResultSet rs, int rowNum) throws SQLException {
         return new Boardgame(
                 rs.getInt(BOARDGAMES_TABLE_ID),
@@ -41,6 +53,11 @@ public class BoardgameRepositoryJdbc implements BoardgameRepository {
                 rs.getInt(BOARDGAMES_TABLE_DURATION),
                 rs.getBigDecimal(BOARDGAMES_TABLE_PRICE)
         );
+    }
+    
+    @Override
+    public void saveNewBoardgame(Boardgame boardgame) {
+        saveBoardgameDetails(boardgame);
     }
     
     private void saveBoardgameDetails(Boardgame boardgame) {
@@ -56,23 +73,6 @@ public class BoardgameRepositoryJdbc implements BoardgameRepository {
 
 //        int id = simpleJdbcInsert.executeAndReturnKey(boardgameDetails).intValue(); // ovako ako zelis dobit id novo generiranog bg-a
         simpleJdbcInsert.executeAndReturnKey(boardgameDetails);
-    }
-    
-    public BoardgameRepositoryJdbc(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName(BOARDGAMES_TABLE)
-                .usingGeneratedKeyColumns(BOARDGAMES_TABLE_ID);
-    }
-    
-    @Override
-    public List<Boardgame> getAllBoardgames() {
-        return jdbcTemplate.query(SELECT_ALL_BGS, this::mapDbRowToBoardgame);
-    }
-    
-    @Override
-    public void saveNewBoardgame(Boardgame boardgame) {
-        saveBoardgameDetails(boardgame);
     }
     
     @Override
