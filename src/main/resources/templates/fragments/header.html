@@ -28,10 +28,19 @@
                     <ul class="navbar-nav mb-2 mb-lg-0 col-lg-10" sec:authorize="isAuthenticated()">
                         <li class="nav-item">
                             <a class="nav-link link-light fw-bold" aria-current="page"
-                               th:href="@{/storeHome/HomePage.html}">Home</a>
+                               th:href="@{/storeHome/homePage.html}">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link link-light fw-bold" th:href="@{/storeHome/HomePage.html}">Browse</a>
+                            <a class="nav-link link-light fw-bold" th:href="@{/storeHome/homePage.html}">Browse</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav mb-2 mb-lg-0 col-lg-10" sec:authorize="isAnonymous()">
+                        <li class="nav-item">
+                            <a class="nav-link link-light fw-bold" aria-current="page"
+                               th:href="@{/}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link link-light fw-bold" th:href="@{/}">Browse</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav mb-2 mb-lg-0 col-lg-2" sec:authorize="isAnonymous()">

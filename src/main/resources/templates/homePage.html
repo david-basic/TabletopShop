@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Home page</title>
@@ -43,36 +42,35 @@
                     </table>
                 </div>
 
-                <div class="col container">
-                    <form th:action="@{/storeHome/newBoardgame.html}" th:object="${newBg}" method="post">
-                        <label>
-                            Id:
-                            <input type="number" step="1" min="0" th:field="*{id}"/>
-                        </label>
+                <div class="col container" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <ul>
+                        <li th:each="err : ${#fields.errors('boardgame.*')}" th:text="${err}" class="text-danger" />
+                    </ul>
+                    <hr>
+                    <form th:action="@{/storeHome/newBoardgame.html}" th:object="${boardgame}" method="post">
                         <label>
                             Name:
-                            <input type="text" th:field="*{name}" th:required="required"/>
+                            <input type="text" th:field="*{name}" name="boardgame.name"/> <!--th:required="required"/> -->
                         </label>
                         <label>
                             Production year:
-                            <input type="number" th:field="*{published}" th:required="required"/>
+                            <input type="number" th:field="*{published}" name="boardgame.published"/> <!--th:min="1950" th:max="2023" th:required="required"/>-->
                         </label>
                         <label>
                             Rating:
-                            <input type="number" step=".1" min="0" max="10" th:field="*{rating}"
-                                   th:required="required"/>
+                            <input type="number" step=".1" th:field="*{rating}" name="boardgame.rating" /> <!-- min="0.0" max="10.0" th:required="required"/> -->
                         </label>
                         <label>
                             Weight (game hardness):
-                            <input type="number" step=".1" min="0" max="5" th:field="*{weight}" th:required="required"/>
+                            <input type="number" step=".1" th:field="*{weight}" name="boardgame.weight" /> <!--  min="0.0" max="5.0" th:required="required"/> -->
                         </label>
                         <label>
                             Playing time:
-                            <input type="number" th:field="*{duration}" th:required="required"/>
+                            <input type="number" th:field="*{duration}" name="boardgame.duration" /> <!-- th:required="required"/> -->
                         </label>
                         <label>
                             Price:
-                            <input type="number" step=".01" th:field="*{price}" th:required="required"/>
+                            <input type="number" step=".01" th:field="*{price}" name="boardgame.price" /> <!--  min = "0" max = "999.99" th:required="required"/> -->
                         </label>
                         <input type="submit"/>
                     </form>
@@ -80,13 +78,12 @@
             </div>
             <br>
             <div class="row justify-content-center">
-                <a th:href="@{/storeHome/cleanSession.html}" class="link-dark">Clean session</a>
+                <span><a th:href="@{/storeHome/cleanSession.html}" sec:authorize="hasRole('ROLE_ADMIN')" class="link-dark">Clean session</a></span>
+                <span><a th:href="@{/storeHome/adminPage.html}" sec:authorize="hasRole('ROLE_ADMIN')" class="link-dark">Admin
+                    page</a></span>
             </div>
             <div class="row">
                 <h1 th:inline="text">Hello <span th:remove="tag" sec:authentication="name">thymeleaf</span>!</h1>
-                <form th:action="@{/logout}" method="post">
-                    <input type="submit" value="Sign Out"/>
-                </form>
             </div>
         </main>
     </div>

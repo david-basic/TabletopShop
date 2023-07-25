@@ -1,6 +1,5 @@
 package hr.algebra.tabletopshop.listener;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
 import org.springframework.stereotype.Component;
