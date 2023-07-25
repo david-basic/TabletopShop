@@ -51,7 +51,7 @@ public class BoardgameRepositoryJdbc implements BoardgameRepository {
                 rs.getDouble(BOARDGAMES_TABLE_RATING),
                 rs.getDouble(BOARDGAMES_TABLE_WEIGHT),
                 rs.getInt(BOARDGAMES_TABLE_DURATION),
-                rs.getBigDecimal(BOARDGAMES_TABLE_PRICE)
+                rs.getDouble(BOARDGAMES_TABLE_PRICE)
         );
     }
     

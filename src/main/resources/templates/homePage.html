@@ -53,24 +53,24 @@
                             <input type="text" th:field="*{name}" name="boardgame.name"/> <!--th:required="required"/> -->
                         </label>
                         <label>
-                            Production year:
-                            <input type="number" th:field="*{published}" name="boardgame.published"/> <!--th:min="1950" th:max="2023" th:required="required"/>-->
+                            Publishing year:
+                            <input type="text" th:field="*{published}" name="boardgame.published"/> <!--th:min="1950" th:max="2023" th:required="required"/>-->
                         </label>
                         <label>
                             Rating:
-                            <input type="number" step=".1" th:field="*{rating}" name="boardgame.rating" /> <!-- min="0.0" max="10.0" th:required="required"/> -->
+                            <input type="text" th:field="*{rating}" name="boardgame.rating" /> <!-- step=".1" min="0.0" max="10.0" th:required="required"/> -->
                         </label>
                         <label>
                             Weight (game hardness):
-                            <input type="number" step=".1" th:field="*{weight}" name="boardgame.weight" /> <!--  min="0.0" max="5.0" th:required="required"/> -->
+                            <input type="text" th:field="*{weight}" name="boardgame.weight" /> <!-- step=".1" min="0.0" max="5.0" th:required="required"/> -->
                         </label>
                         <label>
                             Playing time:
-                            <input type="number" th:field="*{duration}" name="boardgame.duration" /> <!-- th:required="required"/> -->
+                            <input type="text" th:field="*{duration}" name="boardgame.duration" /> <!-- th:required="required"/> -->
                         </label>
                         <label>
                             Price:
-                            <input type="number" step=".01" th:field="*{price}" name="boardgame.price" /> <!--  min = "0" max = "999.99" th:required="required"/> -->
+                            <input type="text" th:field="*{price}" name="boardgame.price" /> <!-- step=".01" min = "0" max = "999.99" th:required="required"/> -->
                         </label>
                         <input type="submit"/>
                     </form>

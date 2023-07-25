@@ -17,9 +17,12 @@ public class BoardgameRepositoryMock implements BoardgameRepository {
     public BoardgameRepositoryMock() {
         bgList = new ArrayList<>();
         
-        Boardgame game1 = new Boardgame(1, "Agricola", 2016, 8.0, 3.47, 120, new BigDecimal(50));
-        Boardgame game2 = new Boardgame(2, "7 Wonders", 2020, 7.9, 2.17, 30, new BigDecimal(60));
-        Boardgame game3 = new Boardgame(3, "Ankh", 2021, 7.9, 3.08, 90, new BigDecimal(250));
+//        Boardgame game1 = new Boardgame(1, "Agricola", 2016, 8.0, 3.47, 120, new BigDecimal(50));
+//        Boardgame game2 = new Boardgame(2, "7 Wonders", 2020, 7.9, 2.17, 30, new BigDecimal(60));
+//        Boardgame game3 = new Boardgame(3, "Ankh", 2021, 7.9, 3.08, 90, new BigDecimal(250));
+        Boardgame game1 = new Boardgame(1, "Agricola", 2016, 8.0, 3.47, 120, 50.00);
+        Boardgame game2 = new Boardgame(2, "7 Wonders", 2020, 7.9, 2.17, 30, 60.00);
+        Boardgame game3 = new Boardgame(3, "Ankh", 2021, 7.9, 3.08, 90, 250.00);
         
         bgList.add(game1);
         bgList.add(game2);
