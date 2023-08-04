@@ -78,6 +78,10 @@
             </div>
             <br>
             <div class="row justify-content-center">
+                <p id="message"></p>
+            </div>
+            <br>
+            <div class="row justify-content-center">
                 <span><a th:href="@{/storeHome/cleanSession.html}" sec:authorize="hasRole('ROLE_ADMIN')" class="link-dark">Clean session</a></span>
                 <span><a th:href="@{/storeHome/adminPage.html}" sec:authorize="hasRole('ROLE_ADMIN')" class="link-dark">Admin
                     page</a></span>
@@ -94,4 +98,19 @@
 <script th:src="@{/webjars/jquery/jquery.js}"></script>
 <script th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
 </body>
+
+<script>
+    $(document).ready(function() {
+        $.ajax({
+            url: "/storeHome/getBoardgameData",
+            type: "GET",
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                $("#message").text(data.message);
+            }
+        });
+    });
+</script>
+
 </html>

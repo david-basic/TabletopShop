@@ -15,6 +15,8 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/storeHome")
 @AllArgsConstructor
@@ -63,5 +65,13 @@ public class HomeController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String getStoreAdminPage() {
         return "adminPage";
+    }
+    
+    @ResponseBody
+    @GetMapping(value = "/getBoardgameData")
+    public String getBoardgameData() throws InterruptedException {
+        List<Boardgame> boardgames = bgRepository.getAllBoardgames();
+        Thread.sleep(10000);
+        return "{\"message\": \"Na skladištu imate " + boardgames.size() + " boardgamea.\"}";
     }
 }
