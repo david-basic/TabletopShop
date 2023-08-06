@@ -24,4 +24,12 @@ public class PublicHomeController {
         
         return "home";
     }
+    
+    @GetMapping("/browse.html")
+    public String openPublicBrowserPage(Model model){
+        customSpringEventPublisher.publishCustomEvent("Anonymous entered public browse page!");
+        model.addAttribute("publicItems", itemRepository.getAllItems());
+        
+        return "browse";
+    }
 }

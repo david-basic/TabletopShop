@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}"/>
+    <title>Browse page</title>
+</head>
+<body>
+
+<div th:fragment="content">
+    <main class="row">
+        <h1>Welcome!</h1>
+        <h3>This is going to be a browsing page for AUTHENTICATED users to filter products in more detail.</h3>
+        <hr>
+        <div class="row">
+            <div class="col">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${items.empty}">
+                        <td colspan="7"> No Items Available</td>
+                    </tr>
+                    <tr th:each="item : ${items}">
+                        <td><span th:text="${item.id}"> Id </span></td>
+                        <td><span th:text="${item.name}"> Name </span></td>
+                        <td><span th:text="${item.category}"> Category </span></td>
+                        <td><span th:text="${item.description}"> Description </span></td>
+                        <td><span th:text="${item.price}"> Price </span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
+</body>
+</html>

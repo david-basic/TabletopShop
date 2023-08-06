@@ -34,6 +34,13 @@ public class HomeController {
         return "homePage";
     }
     
+    @GetMapping("/browse.html")
+    public String getBrowsePage(Model model){
+        customSpringEventPublisher.publishCustomEvent("Home page opened!");
+        model.addAttribute("items", itemRepository.getAllItems());
+        return "browse";
+    }
+    
     @PostMapping("/newItem.html")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String saveNewItem(Model model, @ModelAttribute @Valid Item item, BindingResult bindingResult) {
