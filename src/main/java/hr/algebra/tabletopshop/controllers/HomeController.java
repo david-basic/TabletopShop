@@ -1,9 +1,9 @@
 package hr.algebra.tabletopshop.controllers;
 
-import hr.algebra.tabletopshop.domain.boardgames.Boardgame;
+import hr.algebra.tabletopshop.domain.items.Item;
 import hr.algebra.tabletopshop.publisher.CustomSpringEventPublisher;
-import hr.algebra.tabletopshop.repository.BoardgameRepository;
-import hr.algebra.tabletopshop.service.BoardgameValidationService;
+import hr.algebra.tabletopshop.repository.ItemRepository;
+import hr.algebra.tabletopshop.service.ItemValidationService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -20,26 +20,26 @@ import java.util.List;
 @Controller
 @RequestMapping("/storeHome")
 @AllArgsConstructor
-@SessionAttributes("boardgames")
+@SessionAttributes("items")
 public class HomeController {
-    private BoardgameRepository bgRepository;;
+    private ItemRepository itemRepository;
     private CustomSpringEventPublisher customSpringEventPublisher;
-    private BoardgameValidationService boardgameValidationService;
+    private ItemValidationService itemValidationService;
     
     @GetMapping("/homePage.html")
     public String getStoreHomePage(Model model) {
         customSpringEventPublisher.publishCustomEven("Home page opened!");
-        model.addAttribute("boardgames", bgRepository.getAllBoardgames());
-        model.addAttribute("boardgame", new Boardgame());
+        model.addAttribute("items", itemRepository.getAllItems());
+        model.addAttribute("item", new Item());
         return "homePage";
     }
     
-    @PostMapping("/newBoardgame.html")
+    @PostMapping("/newItem.html")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String saveNewBoardgame(Model model, @ModelAttribute @Valid Boardgame boardgame, BindingResult bindingResult) {
-        model.addAttribute("boardgame", boardgame);
+    public String saveNewItem(Model model, @ModelAttribute @Valid Item item, BindingResult bindingResult) {
+        model.addAttribute("item", item);
         
-        String duplicateError = boardgameValidationService.validateDuplicateBoardgame(boardgame, bgRepository.getAllBoardgames());
+        String duplicateError = itemValidationService.validateDuplicateItem(item, itemRepository.getAllItems());
         
         if (!duplicateError.isEmpty()) {
             ObjectError error = new ObjectError("globalError", duplicateError);
@@ -49,7 +49,7 @@ public class HomeController {
         if (bindingResult.hasErrors()) {
             return "homePage";
         } else {
-            bgRepository.saveNewBoardgame(boardgame);
+            itemRepository.saveNewItem(item);
             return "redirect:/storeHome/homePage.html";
         }
     }
@@ -68,11 +68,11 @@ public class HomeController {
     }
     
     @ResponseBody
-    @GetMapping("/getBoardgameData")
+    @GetMapping("/getItemData")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String getBoardgameData() throws InterruptedException {
-        List<Boardgame> boardgames = bgRepository.getAllBoardgames();
+    public String getItemData() throws InterruptedException {
+        List<Item> items = itemRepository.getAllItems();
         Thread.sleep(10000);
-        return "{\"message\": \"Na skladištu imate " + boardgames.size() + " boardgamea.\"}";
+        return "{\"message\": \"You have " + items.size() + " items in stock.\"}";
     }
 }

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Home page</title>
@@ -18,25 +19,19 @@
                         <tr>
                             <th>Id</th>
                             <th>Name</th>
-                            <th>Year</th>
-                            <th>Rating</th>
-                            <th>Weight</th>
-                            <th>Playing time</th>
+                            <th>Category</th>
                             <th>Price</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${boardgames.empty}">
-                            <td colspan="7"> No Boardgames Available</td>
+                        <tr th:if="${items.empty}">
+                            <td colspan="7"> No Items Available</td>
                         </tr>
-                        <tr th:each="bg : ${boardgames}">
-                            <td><span th:text="${bg.id}"> Id </span></td>
-                            <td><span th:text="${bg.name}"> Name </span></td>
-                            <td><span th:text="${bg.published}"> Year </span></td>
-                            <td><span th:text="${bg.rating}"> Rating </span></td>
-                            <td><span th:text="${bg.weight}"> Weight </span></td>
-                            <td><span th:text="${bg.duration}"> Playing time </span></td>
-                            <td><span th:text="${bg.price}"> Price </span></td>
+                        <tr th:each="item : ${items}">
+                            <td><span th:text="${item.id}"> Id </span></td>
+                            <td><span th:text="${item.name}"> Name </span></td>
+                            <td><span th:text="${item.category}"> Category </span></td>
+                            <td><span th:text="${item.price}"> Price </span></td>
                         </tr>
                         </tbody>
                     </table>
@@ -44,33 +39,25 @@
 
                 <div class="col container" sec:authorize="hasRole('ROLE_ADMIN')">
                     <ul>
-                        <li th:each="err : ${#fields.errors('boardgame.*')}" th:text="${err}" class="text-danger" />
+                        <li th:each="err : ${#fields.errors('item.*')}" th:text="${err}" class="text-danger"/>
                     </ul>
                     <hr>
-                    <form th:action="@{/storeHome/newBoardgame.html}" th:object="${boardgame}" method="post">
+                    <form th:action="@{/storeHome/newItem.html}" th:object="${item}" method="post">
                         <label>
                             Name:
-                            <input type="text" th:field="*{name}" name="boardgame.name"/> <!--th:required="required"/> -->
+                            <input type="text" th:field="*{name}" name="item.name"/> <!--th:required="required"/> -->
                         </label>
                         <label>
-                            Publishing year:
-                            <input type="text" th:field="*{published}" name="boardgame.published"/> <!--th:min="1950" th:max="2023" th:required="required"/>-->
-                        </label>
-                        <label>
-                            Rating:
-                            <input type="text" th:field="*{rating}" name="boardgame.rating" /> <!-- step=".1" min="0.0" max="10.0" th:required="required"/> -->
-                        </label>
-                        <label>
-                            Weight (game hardness):
-                            <input type="text" th:field="*{weight}" name="boardgame.weight" /> <!-- step=".1" min="0.0" max="5.0" th:required="required"/> -->
-                        </label>
-                        <label>
-                            Playing time:
-                            <input type="text" th:field="*{duration}" name="boardgame.duration" /> <!-- th:required="required"/> -->
+                            Category:
+                            <select th:field="*{category}">
+                                <option th:each="category : ${T(hr.algebra.tabletopshop.domain.items.Category).values()}"
+                                        th:value="${category}" th:text="${category}">
+                                </option>
+                            </select>
                         </label>
                         <label>
                             Price:
-                            <input type="text" th:field="*{price}" name="boardgame.price" /> <!-- step=".01" min = "0" max = "999.99" th:required="required"/> -->
+                            <input type="text" th:field="*{price}" name="item.price"/>
                         </label>
                         <input type="submit"/>
                     </form>
@@ -82,7 +69,8 @@
             </div>
             <br>
             <div class="row justify-content-center">
-                <span><a th:href="@{/storeHome/cleanSession.html}" sec:authorize="hasRole('ROLE_ADMIN')" class="link-dark">Clean session</a></span>
+                <span><a th:href="@{/storeHome/cleanSession.html}" sec:authorize="hasRole('ROLE_ADMIN')"
+                         class="link-dark">Clean session</a></span>
                 <span><a th:href="@{/storeHome/adminPage.html}" sec:authorize="hasRole('ROLE_ADMIN')" class="link-dark">Admin
                     page</a></span>
             </div>
@@ -100,9 +88,9 @@
 </body>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         $.ajax({
-            url: "/storeHome/getBoardgameData",
+            url: "/storeHome/getItemData",
             type: "GET",
             contentType: "application/json",
             dataType: "json",

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Add boardgame
+    <title>Add item
         page</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}"/>
 </head>
@@ -27,10 +27,10 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${boardgames.empty}">
+                        <tr th:if="${items.empty}">
                             <td colspan="7"> No Boardgames Available</td>
                         </tr>
-                        <tr th:each="bg : ${boardgames}">
+                        <tr th:each="bg : ${items}">
                             <td><span th:text="${bg.id}"> Id </span></td>
                             <td><span th:text="${bg.name}"> Name </span></td>
                             <td><span th:text="${bg.published}"> Year </span></td>

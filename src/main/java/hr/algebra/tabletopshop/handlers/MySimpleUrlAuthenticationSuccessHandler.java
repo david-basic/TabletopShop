@@ -1,7 +1,5 @@
 package hr.algebra.tabletopshop.handlers;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -45,7 +43,7 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
         
         Map<String, String> roleTargetUrlMap = new HashMap<>();
         roleTargetUrlMap.put("ROLE_USER", "/homePage.html");
-        roleTargetUrlMap.put("ROLE_ADMIN", "/saveNewLegoPiece.html");
+        roleTargetUrlMap.put("ROLE_ADMIN", "/saveNewItem.html");
         
         final Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         for (final GrantedAuthority grantedAuthority : authorities) {
