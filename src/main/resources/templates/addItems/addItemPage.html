@@ -3,7 +3,7 @@
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Home page</title>
+    <title>Add item page</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}"/>
 </head>
 <body style="height: 100vh;" class="d-flex text-center text-bg-dark">
@@ -92,19 +92,4 @@
 <script th:src="@{/webjars/jquery/jquery.js}"></script>
 <script th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
 </body>
-
-<script>
-    $(document).ready(function () {
-        $.ajax({
-            url: "/storeHome/getItemData",
-            type: "GET",
-            contentType: "application/json",
-            dataType: "json",
-            success: function (data) {
-                $("#message").text(data.message);
-            }
-        });
-    });
-</script>
-
 </html>

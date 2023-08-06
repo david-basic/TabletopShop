@@ -24,6 +24,9 @@ public class Item implements Serializable {
     private String name;
     @NotNull(message = "Category must be assigned!")
     private Category category;
+    @NotNull(message = "Description must exist!")
+    @Size(min = 1, max = 200, message = "Description must have more than 1 and less then 200 characters!")
+    private String description;
     @NotNull(message = "Price must exist!")
     @PositiveOrZero(message = "Price must be positive or zero!")
     @DecimalMax(value = "999.99", message = "Price must be less then 999.99€!")

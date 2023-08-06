@@ -23,6 +23,7 @@ public class ItemRepositoryJdbc implements ItemRepository {
     private static final String ITEMS_TABLE_ID = "ID";
     private static final String ITEMS_TABLE_NAME = "NAME";
     private static final String ITEMS_TABLE_CATEGORY = "CATEGORY";
+    private static final String ITEMS_TABLE_DESCRIPTION = "DESCRIPTION";
     private static final String ITEMS_TABLE_PRICE = "PRICE";
     private static final String SELECT_ALL_ITEMS = "select * from ITEMS where 1=1 ";
     
@@ -46,6 +47,7 @@ public class ItemRepositoryJdbc implements ItemRepository {
                 rs.getInt(ITEMS_TABLE_ID),
                 rs.getString(ITEMS_TABLE_NAME),
                 Category.valueOf(rs.getString(ITEMS_TABLE_CATEGORY)),
+                rs.getString(ITEMS_TABLE_DESCRIPTION),
                 rs.getDouble(ITEMS_TABLE_PRICE)
         );
     }
@@ -61,6 +63,7 @@ public class ItemRepositoryJdbc implements ItemRepository {
         itemDetails.put(ITEMS_TABLE_ID, item.getId());
         itemDetails.put(ITEMS_TABLE_NAME, item.getName());
         itemDetails.put(ITEMS_TABLE_CATEGORY, item.getCategory());
+        itemDetails.put(ITEMS_TABLE_DESCRIPTION, item.getDescription());
         itemDetails.put(ITEMS_TABLE_PRICE, item.getPrice());
 
 //        int id = simpleJdbcInsert.executeAndReturnKey(itemDetails).intValue(); // ovako ako zelis dobit id novo generiranog bg-a
@@ -79,6 +82,9 @@ public class ItemRepositoryJdbc implements ItemRepository {
         }
         if (Optional.ofNullable(filter.getCategory()).isPresent()) {
             query += "and CATEGORY = " + filter.getCategory();
+        }
+        if (Optional.ofNullable(filter.getDescription()).isPresent()) {
+            query += "and DESCRIPTION = " + filter.getDescription();
         }
         if (Optional.ofNullable(filter.getPrice()).isPresent()) {
             query += "and PRICE = " + filter.getPrice();
