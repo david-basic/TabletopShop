@@ -22,6 +22,34 @@
         <main class="row">
             <h1>Welcome!</h1>
             <h3>This is going to be a public home page for anonymous users to browse products.</h3>
+            <hr>
+            <div class="row">
+                <div class="col">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${publicItems.empty}">
+                            <td colspan="7"> No Items Available</td>
+                        </tr>
+                        <tr th:each="pbItem : ${publicItems}">
+                            <td><span th:text="${pbItem.id}"> Id </span></td>
+                            <td><span th:text="${pbItem.name}"> Name </span></td>
+                            <td><span th:text="${pbItem.category}"> Category </span></td>
+                            <td><span th:text="${pbItem.description}"> Description </span></td>
+                            <td><span th:text="${pbItem.price}"> Price </span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </main>
     </div>
 

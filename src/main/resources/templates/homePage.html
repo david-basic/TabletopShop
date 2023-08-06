@@ -93,7 +93,7 @@
 <script th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
 </body>
 
-<script>
+<script sec:authorize="hasRole('ROLE_ADMIN')">
     $(document).ready(function () {
         $.ajax({
             url: "/storeHome/getItemData",

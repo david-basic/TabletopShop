@@ -28,7 +28,7 @@ public class HomeController {
     
     @GetMapping("/homePage.html")
     public String getStoreHomePage(Model model) {
-        customSpringEventPublisher.publishCustomEven("Home page opened!");
+        customSpringEventPublisher.publishCustomEvent("Home page opened!");
         model.addAttribute("items", itemRepository.getAllItems());
         model.addAttribute("item", new Item());
         return "homePage";
