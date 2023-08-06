@@ -22,7 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 @SessionAttributes("boardgames")
 public class HomeController {
-    private BoardgameRepository bgRepository;
+    private BoardgameRepository bgRepository;;
     private CustomSpringEventPublisher customSpringEventPublisher;
     private BoardgameValidationService boardgameValidationService;
     
@@ -68,7 +68,8 @@ public class HomeController {
     }
     
     @ResponseBody
-    @GetMapping(value = "/getBoardgameData")
+    @GetMapping("/getBoardgameData")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String getBoardgameData() throws InterruptedException {
         List<Boardgame> boardgames = bgRepository.getAllBoardgames();
         Thread.sleep(10000);
