@@ -1,7 +1,10 @@
 package hr.algebra.tabletopshop.controllers;
 
+import hr.algebra.tabletopshop.domain.items.Category;
+import hr.algebra.tabletopshop.domain.items.Item;
 import hr.algebra.tabletopshop.publisher.CustomSpringEventPublisher;
 import hr.algebra.tabletopshop.repository.ItemRepository;
+import hr.algebra.tabletopshop.repository.mongodb.ItemRepositoryMongo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,12 +18,16 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 @SessionAttributes("publicItems")
 public class PublicHomeController {
     private ItemRepository itemRepository;
+    private ItemRepositoryMongo itemRepositoryMongo;
     private CustomSpringEventPublisher customSpringEventPublisher;
     
     @GetMapping("/home.html")
     public String openPublicHomePage(Model model) {
         customSpringEventPublisher.publishCustomEvent("Anonymous entered public home page!");
-        model.addAttribute("publicItems", itemRepository.getAllItems());
+//        model.addAttribute("publicItems", itemRepository.getAllItems());
+        model.addAttribute("publicItems", itemRepositoryMongo.findAll());
+        
+        //createItems(); // used for the first time to get all the items into mongodb
         
         return "home";
     }
@@ -28,8 +35,27 @@ public class PublicHomeController {
     @GetMapping("/browse.html")
     public String openPublicBrowserPage(Model model){
         customSpringEventPublisher.publishCustomEvent("Anonymous entered public browse page!");
-        model.addAttribute("publicItems", itemRepository.getAllItems());
+//        model.addAttribute("publicItems", itemRepository.getAllItems());
+        model.addAttribute("publicItems", itemRepositoryMongo.findAll());
         
         return "browse";
     }
+    
+    //    void createItems() {
+//        System.out.println("Data creation started...");
+//        itemRepositoryMongo.save(new Item(1, "Agricola", Category.BOARDGAME, "Great game!", 40, 50.0));
+//        itemRepositoryMongo.save(new Item(2, "7 Wonders", Category.BOARDGAME, "Complete novelty on the market!", 20, 60.0));
+//        itemRepositoryMongo.save(new Item(3, "Ankh", Category.BOARDGAME, "Best old Egypt game out there!", 10, 100.0));
+//        itemRepositoryMongo.save(new Item(4, "Dune: Imperium", Category.BOARDGAME, "Jason Momoa ftw!", 10, 50.0));
+//        itemRepositoryMongo.save(new Item(5, "US Army starter pack", Category.WARGAMING, "It is just like the movies!", 5, 50.0));
+//        itemRepositoryMongo.save(new Item(6, "Olive Drab Color", Category.DICE, "Best rolling experience ever!", 200, 14.99));
+//        itemRepositoryMongo.save(new Item(7, "Space Marines x2", Category.MINI, "For the EMPEROR", 10, 159.99));
+//        itemRepositoryMongo.save(new Item(8, "Calico", Category.BOARDGAME, "Cute and fuzzy!", 20, 59.99));
+//        itemRepositoryMongo.save(new Item(9, "German Army starter pack", Category.WARGAMING, "Panzer to the rescue!", 10, 99.99));
+//        itemRepositoryMongo.save(new Item(10, "Terra-forming Mars", Category.BOARDGAME, "Eat your heart out Musk!", 10, 50.00));
+//        itemRepositoryMongo.save(new Item(11, "Witcher 3 Ciri dice", Category.DICE, "They glow in the dark!", 50, 14.99));
+//        itemRepositoryMongo.save(new Item(12, "Witcher 3 Geralt", Category.MINI, "A beautiful collectible statuette!", 2, 299.99));
+//        System.out.println("Data creation complete...");
+//    }
+    
 }

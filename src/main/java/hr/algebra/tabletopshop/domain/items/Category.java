@@ -1,5 +1,5 @@
 package hr.algebra.tabletopshop.domain.items;
 
 public enum Category {
-    BOARDGAME, DICE, MINI, TCG, TTRPG
+    BOARDGAME, DICE, MINI, TCG, TTRPG, WARGAMING, PAINTING
 }

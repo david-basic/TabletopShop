@@ -17,9 +17,9 @@ public class ItemRepositoryMock implements ItemRepository {
     public ItemRepositoryMock() {
         itemsList = new ArrayList<>();
         
-        Item item1 = new Item(1, "Agricola", Category.BOARDGAME, "Great game!", 50.00);
-        Item item2 = new Item(2, "7 Wonders", Category.BOARDGAME, "Complete novelty on the market!",  60.00);
-        Item item3 = new Item(3, "Ankh", Category.BOARDGAME, "Best old Egypt game out there!", 250.00);
+        Item item1 = new Item(1, "Agricola", Category.BOARDGAME, "Great game!", 20, 50.00);
+        Item item2 = new Item(2, "7 Wonders", Category.BOARDGAME, "Complete novelty on the market!", 30,  60.00);
+        Item item3 = new Item(3, "Ankh", Category.BOARDGAME, "Best old Egypt game out there!", 5, 250.00);
         
         itemsList.add(item1);
         itemsList.add(item2);
@@ -51,6 +51,9 @@ public class ItemRepositoryMock implements ItemRepository {
         }
         if (Optional.ofNullable(filter.getDescription()).isPresent()) {
             filteredList = filteredList.stream().filter(item -> item.getDescription().equals(filter.getDescription())).collect(Collectors.toList());
+        }
+        if (Optional.ofNullable(filter.getQuantity()).isPresent()) {
+            filteredList = filteredList.stream().filter(item -> item.getQuantity().equals(filter.getQuantity())).collect(Collectors.toList());
         }
         if (Optional.ofNullable(filter.getPrice()).isPresent()) {
             filteredList = filteredList.stream().filter(item -> item.getPrice().equals(filter.getPrice())).collect(Collectors.toList());
