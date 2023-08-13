@@ -28,6 +28,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashSet;
 import java.util.List;
@@ -57,30 +58,30 @@ public class AuthController {
         model.addAttribute("userRegistered", new RegisterSuccessDto(false));
         return "login";
     }
-    
-    @PostMapping("/newUser.html")
-    public String saveNewUser(Model model, @ModelAttribute @Valid User user, @ModelAttribute RegisterSuccessDto userRegistered, BindingResult bindingResult) {
-        model.addAttribute("user", user);
-        
-        String duplicateError = userValidationService.validateDuplicateUser(user, userRepositoryMongo.findAll());
-        
-        if(!duplicateError.isEmpty()) {
-            ObjectError error = new ObjectError("registerError", duplicateError);
-            bindingResult.addError(error);
-        }
-        
-        if(bindingResult.hasErrors()){
-            Objects.requireNonNull(userRegistered).setUserRegistered(false);
-        } else {
-            Objects.requireNonNull(userRegistered).setUserRegistered(true);
-            userRepositoryMongo.save(user);
-        }
-        model.addAttribute("userRegistered", userRegistered);
-        return "redirect:/auth/login.html";
-    }
+
+//    @PostMapping("/newUser.html")
+//    public String saveNewUser(Model model, @ModelAttribute @Valid User user, @ModelAttribute RegisterSuccessDto userRegistered, BindingResult bindingResult) {
+//        model.addAttribute("user", user);
+//
+//        String duplicateError = userValidationService.validateDuplicateUser(user, userRepositoryMongo.findAll());
+//
+//        if(!duplicateError.isEmpty()) {
+//            ObjectError error = new ObjectError("registerError", duplicateError);
+//            bindingResult.addError(error);
+//        }
+//
+//        if(bindingResult.hasErrors()){
+//            Objects.requireNonNull(userRegistered).setUserRegistered(false);
+//        } else {
+//            Objects.requireNonNull(userRegistered).setUserRegistered(true);
+//            userRepositoryMongo.save(user);
+//        }
+//        model.addAttribute("userRegistered", userRegistered);
+//        return "redirect:/auth/login.html";
+//    }
     
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(Model model,@ModelAttribute @Valid @RequestBody UserLoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(Model model, @ModelAttribute @Valid @RequestBody UserLoginRequest loginRequest) {
         model.addAttribute("loginRequest", loginRequest);
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -101,13 +102,20 @@ public class AuthController {
     
     
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(Model model, @ModelAttribute @Valid @RequestBody UserRegisterRequest registerRequest) {
+    public ModelAndView registerUser(Model model, @ModelAttribute @Valid @RequestBody UserRegisterRequest registerRequest) {
         model.addAttribute("registerRequest", registerRequest);
         
+        ModelAndView mav = new ModelAndView();
+        
         if (userRepositoryMongo.existsByUsername(registerRequest.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
+            MessageResponse msg = new MessageResponse("Error: Username is already taken!");
+            ResponseEntity<MessageResponse> res = ResponseEntity.badRequest().body(msg);
+            
+            mav.addObject("registerRequest", registerRequest);
+            mav.addObject("response", res);
+            mav.setViewName("redirect:/auth/login.html");
+            
+            return mav;
         }
         
         // Create new user's account
@@ -135,12 +143,17 @@ public class AuthController {
             });
         }
         
-        Integer newItemId = ((Number)userRepositoryMongo.count()).intValue() + 1;
+        Integer newItemId = ((Number) userRepositoryMongo.count()).intValue() + 1;
         user.setId(newItemId);
         user.setRoles(roles);
         userRepositoryMongo.save(user);
         
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        MessageResponse messageResponse = new MessageResponse("User registered successfully!");
+        ResponseEntity<MessageResponse> res = ResponseEntity.ok(messageResponse);
+        mav.addObject("response", res);
+        mav.setViewName("redirect:/auth/login.html");
+        
+        return mav;
     }
     
 }
