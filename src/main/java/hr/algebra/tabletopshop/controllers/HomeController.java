@@ -1,10 +1,7 @@
 package hr.algebra.tabletopshop.controllers;
 
-import com.sun.jdi.IntegerValue;
-import hr.algebra.tabletopshop.domain.items.Category;
 import hr.algebra.tabletopshop.domain.items.Item;
 import hr.algebra.tabletopshop.publisher.CustomSpringEventPublisher;
-import hr.algebra.tabletopshop.repository.ItemRepository;
 import hr.algebra.tabletopshop.repository.mongodb.ItemRepositoryMongo;
 import hr.algebra.tabletopshop.service.ItemValidationService;
 import jakarta.servlet.http.HttpSession;
@@ -25,7 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 @SessionAttributes("items")
 public class HomeController {
-    private ItemRepository itemRepository;
+//    private ItemRepository itemRepository;
     private ItemRepositoryMongo itemRepositoryMongo;
     private CustomSpringEventPublisher customSpringEventPublisher;
     private ItemValidationService itemValidationService;

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Deprecated
 @Repository
 @Primary
 public class ItemRepositoryJdbc implements ItemRepository {

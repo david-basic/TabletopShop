@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" name="viewport" content="width=device-width, initial-scale=1, text/html">
+
+    <!-- Bootstrap css -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>User register page</title>
+</head>
+<body style="height: 100vh;" class="d-flex text-center text-bg-dark">
+<div class="d-flex w-100 h-100 mx-auto flex-column">
+    <div class="mb-auto" th:insert="~{/fragments/header :: header}"></div>
+
+    <div class="container">
+        <main class="row">
+            <form action="/" th:object="${user}" method="POST" enctype="utf8">
+                <div>
+                    <label th:text="#{label.user.firstName}">first</label>
+                    <input th:field="*{firstName}"/>
+                    <p th:each="error: ${#fields.errors('firstName')}"
+                       th:text="${error}">Validation error</p>
+                </div>
+                <div>
+                    <label th:text="#{label.user.lastName}">last</label>
+                    <input th:field="*{lastName}"/>
+                    <p th:each="error : ${#fields.errors('lastName')}"
+                       th:text="${error}">Validation error</p>
+                </div>
+                <div>
+                    <label th:text="#{label.user.email}">email</label>
+                    <input type="email" th:field="*{email}"/>
+                    <p th:each="error : ${#fields.errors('email')}"
+                       th:text="${error}">Validation error</p>
+                </div>
+                <div>
+                    <label th:text="#{label.user.password}">password</label>
+                    <input type="password" th:field="*{password}"/>
+                    <p th:each="error : ${#fields.errors('password')}"
+                       th:text="${error}">Validation error</p>
+                </div>
+                <div>
+                    <label th:text="#{label.user.confirmPass}">confirm</label>
+                    <input type="password" th:field="*{matchingPassword}"/>
+                </div>
+                <button type="submit" th:text="#{label.form.submit}">submit</button>
+            </form>
+        </main>
+    </div>
+
+    <div class="mt-auto" th:insert="~{/fragments/footer :: footer}"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+</body>
+</html>

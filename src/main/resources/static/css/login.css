@@ -1,0 +1,47 @@
+#tab-login{
+    background-color: white;
+    color: black;
+    border-width: 2px;
+    border-style: solid;
+    border-color: black;
+}
+
+#tab-login:hover {
+    background-color: darkgray;
+    color: black;
+    border-width: 2px;
+    border-style: solid;
+    border-color: black;
+}
+
+#tab-login:focus{
+    background-color: black;
+    color: white;
+    border-width: 2px;
+    border-style: solid;
+    border-color: black;
+}
+
+#tab-register{
+    background-color: white;
+    color: black;
+    border-width: 2px;
+    border-style: solid;
+    border-color: black;
+}
+
+#tab-register:hover {
+    background-color: darkgray;
+    color: black;
+    border-width: 2px;
+    border-style: solid;
+    border-color: black;
+}
+
+#tab-register:focus{
+    background-color: black;
+    color: white;
+    border-width: 2px;
+    border-style: solid;
+    border-color: black;
+}

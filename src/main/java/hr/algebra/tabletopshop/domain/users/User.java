@@ -7,23 +7,25 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-@Document("userslist")
-public class User implements Serializable {
+@Document("users")
+public class User {
     
     @Id
     @EqualsAndHashCode.Exclude
     private Integer id;
     
     @NotNull(message = "Username must exist!")
-    @Size(min = 5, message = "Username must have 5 characters at least!")
+    @Size(min = 4, message = "Username must have 4 characters at least!")
     private String username;
     
     @NotNull(message = "Password must exist!")
@@ -31,7 +33,12 @@ public class User implements Serializable {
     @EqualsAndHashCode.Exclude
     private String password;
     
-    @EqualsAndHashCode.Exclude
     @NotNull
-    private Boolean enabled;
+    @DBRef
+    private Set<Role> roles = new HashSet<>();
+    
+    public User(@NotNull String username, @NotNull String password) {
+        this.username = username;
+        this.password = password;
+    }
 }
