@@ -143,25 +143,17 @@
         const errorCheckMessage = urlParams.get('errorMessage');
         const userRegisteredFlag = urlParams.get('userRegistered');
 
-        console.log('ecm: ' + errorCheckMessage);
-        console.log('usf: ' + userRegisteredFlag);
-
         // Register toast show
         if (userRegisteredFlag === "true") {
             const toastElement = $('#registerToastSuccess');
             const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastElement);
             $('#toastBodySuccess').html(errorCheckMessage);
             toastBootstrap.show();
-
-            console.log("USAO u TRUE")
-
         } else if (userRegisteredFlag === "false") {
             const toastElement = $('#registerToastFail');
             const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastElement);
             $('#toastBodyFail').html(errorCheckMessage)
             toastBootstrap.show();
-
-            console.log("USAO u FALSE")
         }
     });
 
@@ -225,36 +217,6 @@
             }, false)
         })
     });
-
-    // //prikazivanje alerta kad je username uzet
-    // $('#btnRegister').on("submit", () => {
-    //     console.log("Submit je stisnut!!!!");
-    //
-    //     const queryString = window.location.search;
-    //     const urlParam = new URLSearchParams(queryString);
-    //
-    //     const errorCheck = urlParam.get('errorMessage');
-    //     console.log("error check: " + errorCheck);
-    //     if (errorCheck !== '') {
-    //         const errorMsg = urlParam.get('errorMessage');
-    //         alert(errorMsg);
-    //         console.log("err msg: " + errorMsg);
-    //     } else {
-    //         alert("User registered successfully!");
-    //         console.log("passed")
-    //     }
-    // });
-
-
-    // if (errorCheck !== '') {
-    //     const errorMsg = urlParam.get('errorMessage');
-    //     alert(errorMsg);
-    //     console.log("err msg: " + errorMsg);
-    // } else {
-    //     alert("User registered successfully!");
-    //     console.log("passed")
-    // }
-
 </script>
 </body>
 </html>
