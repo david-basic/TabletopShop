@@ -1,6 +1,5 @@
 package hr.algebra.tabletopshop.controllers;
 
-import com.google.gson.Gson;
 import hr.algebra.tabletopshop.domain.dto.RegisterSuccessDto;
 import hr.algebra.tabletopshop.domain.users.Role;
 import hr.algebra.tabletopshop.domain.users.RoleEnum;
@@ -24,11 +23,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
