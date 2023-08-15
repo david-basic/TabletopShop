@@ -11,7 +11,7 @@
 
 <header th:fragment="header" class="bg-dark">
     <div class="container">
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <nav class="navbar navbar-expand-lg bg-dark">
             <div class="container-fluid">
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -24,7 +24,7 @@
                         </svg>
                     </span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">7
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mb-2 mb-lg-0 col-lg-10" sec:authorize="isAnonymous()">
                         <li class="nav-item">
                             <a class="nav-link link-light fw-bold" aria-current="page"
@@ -34,7 +34,7 @@
                             <a class="nav-link link-light fw-bold" th:href="@{/public/browse.html}">Browse</a>
                         </li>
                     </ul>
-                    <ul class="navbar-nav mb-2 mb-lg-0 col-lg-2" sec:authorize="isAnonymous()">
+                    <ul class="navbar-nav justify-content-end mb-2 mb-lg-0 col-lg-2" sec:authorize="isAnonymous()">
                         <li class="nav-item">
                             <a class="nav-link link-light fw-bold" th:href="@{/auth/login.html}"
                                aria-current="page">Login</a>
@@ -49,7 +49,7 @@
                             <a class="nav-link link-light fw-bold" th:href="@{/storeHome/browse.html}">Browse</a>
                         </li>
                     </ul>
-                    <ul class="navbar-nav mb-2 mb-lg-0 col-lg-2" sec:authorize="isAuthenticated()">
+                    <ul class="navbar-nav justify-content-end mb-2 mb-lg-0 col-lg-2" sec:authorize="isAuthenticated()">
                         <li class="nav-item">
                             <form class="nav-link link-light fw-bold" th:action="@{/logout}" method="post">
                                 <input type="submit" value="Sign Out"/>
