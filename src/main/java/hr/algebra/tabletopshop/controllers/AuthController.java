@@ -1,5 +1,6 @@
 package hr.algebra.tabletopshop.controllers;
 
+import com.google.gson.Gson;
 import hr.algebra.tabletopshop.domain.dto.RegisterSuccessDto;
 import hr.algebra.tabletopshop.domain.users.Role;
 import hr.algebra.tabletopshop.domain.users.RoleEnum;
@@ -12,10 +13,8 @@ import hr.algebra.tabletopshop.publisher.CustomSpringEventPublisher;
 import hr.algebra.tabletopshop.repository.mongodb.RoleRepositoryMongo;
 import hr.algebra.tabletopshop.repository.mongodb.UserRepositoryMongo;
 import hr.algebra.tabletopshop.service.UserDetailsImpl;
-import hr.algebra.tabletopshop.service.UserValidationService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,21 +25,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/auth")
 @AllArgsConstructor
 public class AuthController {
-    private UserValidationService userValidationService;
     private CustomSpringEventPublisher customSpringEventPublisher;
     
     private UserRepositoryMongo userRepositoryMongo;
@@ -50,11 +44,10 @@ public class AuthController {
     
     
     @GetMapping("/login.html")
-    public String openLoginPage(Model model, @ModelAttribute RegisterSuccessDto userRegistered) {
+    public String openLoginPage(Model model) {
         customSpringEventPublisher.publishCustomEvent("Anonymous authentication page opened!");
         model.addAttribute("loginRequest", new UserLoginRequest());
         model.addAttribute("registerRequest", new UserRegisterRequest());
-//        model.addAttribute("user", new User());
         model.addAttribute("userRegistered", new RegisterSuccessDto(false));
         return "login";
     }
@@ -102,17 +95,26 @@ public class AuthController {
     
     
     @PostMapping("/signup")
-    public ModelAndView registerUser(Model model, @ModelAttribute @Valid @RequestBody UserRegisterRequest registerRequest) {
-        model.addAttribute("registerRequest", registerRequest);
-        
+    public ModelAndView registerUser(@ModelAttribute @Valid @RequestBody UserRegisterRequest registerRequest) {
         ModelAndView mav = new ModelAndView();
+        RegisterSuccessDto registerSuccessDto = new RegisterSuccessDto(false);
         
         if (userRepositoryMongo.existsByUsername(registerRequest.getUsername())) {
-            MessageResponse msg = new MessageResponse("Error: Username is already taken!");
+            registerSuccessDto.setSuccess(false);
+            MessageResponse msg = new MessageResponse("Username is already taken");
             ResponseEntity<MessageResponse> res = ResponseEntity.badRequest().body(msg);
             
             mav.addObject("registerRequest", registerRequest);
             mav.addObject("response", res);
+            mav.addObject("errorMessage", msg.getMessage());
+            mav.addObject("userRegistered", registerSuccessDto.getSuccess());
+            
+            System.out.println("1 register req: " + registerRequest);
+            System.out.println("1 res: " + res);
+            System.out.println("1 res.body: " + res.getBody());
+            System.out.println("1 msg.getmsg: " + msg.getMessage());
+            System.out.println("1 userRegistered: " + registerSuccessDto.getSuccess());
+            
             mav.setViewName("redirect:/auth/login.html");
             
             return mav;
@@ -143,15 +145,25 @@ public class AuthController {
             });
         }
         
-        Integer newItemId = ((Number) userRepositoryMongo.count()).intValue() + 1;
-        user.setId(newItemId);
+        Integer newUserId = ((Number) userRepositoryMongo.count()).intValue() + 1;
+        user.setId(newUserId);
         user.setRoles(roles);
         userRepositoryMongo.save(user);
         
-        MessageResponse messageResponse = new MessageResponse("User registered successfully!");
+        registerSuccessDto.setSuccess(true);
+        
+        MessageResponse messageResponse = new MessageResponse("User registered successfully");
         ResponseEntity<MessageResponse> res = ResponseEntity.ok(messageResponse);
         mav.addObject("response", res);
+        mav.addObject("userRegistered", registerSuccessDto.getSuccess());
+        mav.addObject("errorMessage", messageResponse.getMessage());
         mav.setViewName("redirect:/auth/login.html");
+        
+        System.out.println("2 register req: " + registerRequest);
+        System.out.println("2 res: " + res);
+        System.out.println("2 res.body: " + res.getBody());
+        System.out.println("2 msg.getmsg: " + messageResponse.getMessage());
+        System.out.println("2 userRegistered: " + registerSuccessDto.getSuccess());
         
         return mav;
     }
