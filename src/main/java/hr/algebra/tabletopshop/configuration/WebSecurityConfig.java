@@ -1,6 +1,6 @@
 package hr.algebra.tabletopshop.configuration;
 
-import hr.algebra.tabletopshop.service.UserDetailsServiceImpl;
+import hr.algebra.tabletopshop.service.implementations.UserDetailsServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,8 +12,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -45,15 +43,12 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/storeHome/**").authenticated()
                         .requestMatchers("/public/**", "/auth/**", "/resources/**", "/css/**", "/js/**", "/images/**").permitAll()
                         .anyRequest().permitAll()
                 )
                 .formLogin((form) -> form
-//                        .loginPage("/auth/login.html")
-//                        .loginProcessingUrl("/login")
                         .loginPage("/auth/login.html")
                         .loginProcessingUrl("/auth/signin")
                         .defaultSuccessUrl("/storeHome/homePage.html", true) // true mi treba ovdje jer inace mi prikaze jquery ili bootstrap response
@@ -65,20 +60,6 @@ public class WebSecurityConfig {
         
         return http.build();
     }
-    
-//    @Bean
-//    public UserDetailsService jdbcUserDetailsService(DataSource dataSource) {
-//        String usersByUsernameQuery = "select username, password, enabled from users where username = ?";
-//        String authsByUsernameQuery = "select username, authority from authorities where username = ?";
-//
-//
-//        JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
-//
-//        users.setUsersByUsernameQuery(usersByUsernameQuery);
-//        users.setAuthoritiesByUsernameQuery(authsByUsernameQuery);
-//
-//        return users;
-//    }
     
     @Bean
     public PasswordEncoder bCryptPasswordEncoder() {
