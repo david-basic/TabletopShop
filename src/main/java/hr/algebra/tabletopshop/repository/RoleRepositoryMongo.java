@@ -1,7 +1,7 @@
-package hr.algebra.tabletopshop.repository.mongodb;
+package hr.algebra.tabletopshop.repository;
 
-import hr.algebra.tabletopshop.domain.users.Role;
-import hr.algebra.tabletopshop.domain.users.RoleEnum;
+import hr.algebra.tabletopshop.model.users.Role;
+import hr.algebra.tabletopshop.model.users.RoleEnum;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;

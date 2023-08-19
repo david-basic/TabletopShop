@@ -1,6 +1,6 @@
-package hr.algebra.tabletopshop.repository.mongodb;
+package hr.algebra.tabletopshop.repository;
 
-import hr.algebra.tabletopshop.domain.users.User;
+import hr.algebra.tabletopshop.model.users.User;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
