@@ -1,17 +1,17 @@
 package hr.algebra.tabletopshop.controllers;
 
-import hr.algebra.tabletopshop.domain.dto.RegisterSuccessDto;
-import hr.algebra.tabletopshop.domain.users.Role;
-import hr.algebra.tabletopshop.domain.users.RoleEnum;
-import hr.algebra.tabletopshop.domain.users.User;
+import hr.algebra.tabletopshop.dto.RegisterSuccessDto;
+import hr.algebra.tabletopshop.model.users.Role;
+import hr.algebra.tabletopshop.model.users.RoleEnum;
+import hr.algebra.tabletopshop.model.users.User;
 import hr.algebra.tabletopshop.payload.MessageResponse;
 import hr.algebra.tabletopshop.payload.UserInfoResponse;
 import hr.algebra.tabletopshop.payload.UserLoginRequest;
 import hr.algebra.tabletopshop.payload.UserRegisterRequest;
 import hr.algebra.tabletopshop.publisher.CustomSpringEventPublisher;
-import hr.algebra.tabletopshop.repository.mongodb.RoleRepositoryMongo;
-import hr.algebra.tabletopshop.repository.mongodb.UserRepositoryMongo;
-import hr.algebra.tabletopshop.service.UserDetailsImpl;
+import hr.algebra.tabletopshop.repository.RoleRepositoryMongo;
+import hr.algebra.tabletopshop.repository.UserRepositoryMongo;
+import hr.algebra.tabletopshop.service.implementations.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -51,27 +51,7 @@ public class AuthController {
         model.addAttribute("userRegistered", new RegisterSuccessDto(false));
         return "login";
     }
-
-//    @PostMapping("/newUser.html")
-//    public String saveNewUser(Model model, @ModelAttribute @Valid User user, @ModelAttribute RegisterSuccessDto userRegistered, BindingResult bindingResult) {
-//        model.addAttribute("user", user);
-//
-//        String duplicateError = userValidationService.validateDuplicateUser(user, userRepositoryMongo.findAll());
-//
-//        if(!duplicateError.isEmpty()) {
-//            ObjectError error = new ObjectError("registerError", duplicateError);
-//            bindingResult.addError(error);
-//        }
-//
-//        if(bindingResult.hasErrors()){
-//            Objects.requireNonNull(userRegistered).setUserRegistered(false);
-//        } else {
-//            Objects.requireNonNull(userRegistered).setUserRegistered(true);
-//            userRepositoryMongo.save(user);
-//        }
-//        model.addAttribute("userRegistered", userRegistered);
-//        return "redirect:/auth/login.html";
-//    }
+    
     
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(Model model, @ModelAttribute @Valid @RequestBody UserLoginRequest loginRequest) {
@@ -108,12 +88,6 @@ public class AuthController {
             mav.addObject("response", res);
             mav.addObject("errorMessage", msg.getMessage());
             mav.addObject("userRegistered", registerSuccessDto.getSuccess());
-            
-            System.out.println("1 register req: " + registerRequest);
-            System.out.println("1 res: " + res);
-            System.out.println("1 res.body: " + res.getBody());
-            System.out.println("1 msg.getmsg: " + msg.getMessage());
-            System.out.println("1 userRegistered: " + registerSuccessDto.getSuccess());
             
             mav.setViewName("redirect:/auth/login.html");
             
@@ -159,13 +133,28 @@ public class AuthController {
         mav.addObject("errorMessage", messageResponse.getMessage());
         mav.setViewName("redirect:/auth/login.html");
         
-        System.out.println("2 register req: " + registerRequest);
-        System.out.println("2 res: " + res);
-        System.out.println("2 res.body: " + res.getBody());
-        System.out.println("2 msg.getmsg: " + messageResponse.getMessage());
-        System.out.println("2 userRegistered: " + registerSuccessDto.getSuccess());
-        
         return mav;
     }
+    
+    //    @PostMapping("/newUser.html")
+//    public String saveNewUser(Model model, @ModelAttribute @Valid User user, @ModelAttribute RegisterSuccessDto userRegistered, BindingResult bindingResult) {
+//        model.addAttribute("user", user);
+//
+//        String duplicateError = userValidationService.validateDuplicateUser(user, userRepositoryMongo.findAll());
+//
+//        if(!duplicateError.isEmpty()) {
+//            ObjectError error = new ObjectError("registerError", duplicateError);
+//            bindingResult.addError(error);
+//        }
+//
+//        if(bindingResult.hasErrors()){
+//            Objects.requireNonNull(userRegistered).setUserRegistered(false);
+//        } else {
+//            Objects.requireNonNull(userRegistered).setUserRegistered(true);
+//            userRepositoryMongo.save(user);
+//        }
+//        model.addAttribute("userRegistered", userRegistered);
+//        return "redirect:/auth/login.html";
+//    }
     
 }
