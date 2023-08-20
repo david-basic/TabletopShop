@@ -1,29 +1,18 @@
-package hr.algebra.tabletopshop.domain.items;
+package hr.algebra.tabletopshop.dto;
 
+import hr.algebra.tabletopshop.model.items.Category;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.io.Serializable;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
-@Document("itemslist")
-public class Item implements Serializable {
-    
-    @EqualsAndHashCode.Exclude
-    @Id
-    private Integer id;
-    
+@AllArgsConstructor
+public class CreateItemFormDto {
     @NotNull(message = "Name must exist!")
     @Size(min = 1, max = 100, message = "Name must have more than 1 and less then 100 characters!")
     private String name;
@@ -43,5 +32,4 @@ public class Item implements Serializable {
     @PositiveOrZero(message = "Price must be positive or zero!")
     @DecimalMax(value = "999.99", message = "Price must be less then 999.99€!")
     private Double price;
-    
 }
