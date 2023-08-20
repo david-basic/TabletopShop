@@ -1,6 +1,6 @@
-package hr.algebra.tabletopshop.repository.mongodb;
+package hr.algebra.tabletopshop.repository;
 
-import hr.algebra.tabletopshop.domain.items.Item;
+import hr.algebra.tabletopshop.model.items.Item;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-public interface ItemRepositoryMongo extends MongoRepository<Item, Integer> {
+public interface ItemRepositoryMongo extends MongoRepository<Item, String> {
     
     @Query("{name:'?0'}")
     List<Item> findAllByName(String name);
@@ -16,16 +16,19 @@ public interface ItemRepositoryMongo extends MongoRepository<Item, Integer> {
     @Query("{category:'?0'}")
     List<Item> findAllByCategory(String category);
     
-    Item findTopByOrderByIdDesc();
+    Item findTopByOrderByItemIdDesc();
+    
     
     @Override
     @NotNull
-    Optional<Item> findById(@NotNull Integer id);
+    Optional<Item> findById(@NotNull String id);
+    
+    Optional<Item> findByItemId(Integer itemId);
     
     @Override
     @NotNull
     List<Item> findAll();
-  
+    
     @Override
     long count();
 }

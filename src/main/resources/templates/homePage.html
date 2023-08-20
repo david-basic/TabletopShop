@@ -6,7 +6,7 @@
     <title>Home page</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}"/>
 </head>
-<body style="height: 100vh;" class="d-flex text-center text-bg-dark">
+<body style="height: 100vh;" class="d-flex text-center">
 <div class="d-flex w-100 h-100 mx-auto flex-column">
     <div class="mb-auto" th:insert="~{/fragments/header :: header}"></div>
 
@@ -14,28 +14,35 @@
         <main class="row">
             <div class="row">
                 <div class="col">
-                    <table>
+                    <table class="table table-hover">
                         <thead>
                         <tr>
-                            <th>Id</th>
-                            <th>Name</th>
-                            <th>Category</th>
-                            <th>Description</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
+                            <th scope="col">Id</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Price</th>
+                            <th scope="col" sec:authorize="hasRole('ROLE_ADMIN')">Action</th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="table-group-divider align-text-bottom">
                         <tr th:if="${items.isEmpty()}">
                             <td colspan="7"> No Items Available</td>
                         </tr>
                         <tr th:each="item : ${items}">
-                            <td><span th:text="${item.id}"> Id </span></td>
-                            <td><span th:text="${item.name}"> Name </span></td>
-                            <td><span th:text="${item.category}"> Category </span></td>
-                            <td><span th:text="${item.description}"> Description </span></td>
-                            <td><span th:text="${item.quantity}"> Quantity </span></td>
-                            <td><span th:text="${item.price}"> Price </span></td>
+                            <th scope="row" th:text="${item.itemId}"></th>
+                            <td th:text="${item.name}"></td>
+                            <td th:text="${item.category}"></td>
+                            <td th:text="${item.description}"></td>
+                            <td th:text="${item.quantity}"></td>
+                            <td th:text="${item.price} + ' €'"></td>
+                            <td sec:authorize="hasRole('ROLE_ADMIN')">
+                                <form class="d-inline" th:action="@{/storeHome/deleteItem}" method="post">
+                                    <input type="hidden" name="id" th:value="${item.id}">  <!-- ovdje saljem proper id a ne moj id da bi se dobro item deletao -->
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">DELETE</button>
+                                </form>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -46,30 +53,30 @@
                         <li th:each="err : ${#fields.errors('item.*')}" th:text="${err}" class="text-danger"/>
                     </ul>
                     <hr>
-                    <form th:action="@{/storeHome/newItem.html}" th:object="${item}" method="post">
+                    <form th:action="@{/storeHome/newItem}" th:object="${item}" method="post">
                         <label>
                             Name:
-                            <input type="text" th:field="*{name}" name="item.name"/> <!--th:required="required"/> -->
+                            <input type="text" th:field="*{name}" name="item.name" required/>
                         </label>
                         <label>
                             Category:
                             <select th:field="*{category}">
-                                <option th:each="category : ${T(hr.algebra.tabletopshop.domain.items.Category).values()}"
+                                <option th:each="category : ${T(hr.algebra.tabletopshop.model.items.Category).values()}"
                                         th:value="${category}" th:text="${category}">
                                 </option>
                             </select>
                         </label>
                         <label>
                             Description:
-                            <input type="text" th:field="*{description}" name="item.description"/>
+                            <input type="text" th:field="*{description}" name="item.description" required/>
                         </label>
                         <label>
                             Quantity:
-                            <input type="text" th:field="*{quantity}" name="item.quantity"/>
+                            <input type="text" th:field="*{quantity}" name="item.quantity" required/>
                         </label>
                         <label>
                             Price:
-                            <input type="text" th:field="*{price}" name="item.price"/>
+                            <input type="text" th:field="*{price}" name="item.price" required/>
                         </label>
                         <input type="submit"/>
                     </form>
@@ -81,9 +88,9 @@
             </div>
             <br>
             <div class="row justify-content-center">
-                <span><a th:href="@{/storeHome/cleanSession.html}" sec:authorize="hasRole('ROLE_ADMIN')"
+                <span><a th:href="@{/storeHome/cleanSession}" sec:authorize="hasRole('ROLE_ADMIN')"
                          class="link-dark">Clean session</a></span>
-                <span><a th:href="@{/storeHome/adminPage.html}" sec:authorize="hasRole('ROLE_ADMIN')" class="link-dark">Admin
+                <span><a th:href="@{/storeHome/adminPage}" sec:authorize="hasRole('ROLE_ADMIN')" class="link-dark">Admin
                     page</a></span>
             </div>
             <div class="row">

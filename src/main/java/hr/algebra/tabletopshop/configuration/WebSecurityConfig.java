@@ -49,9 +49,9 @@ public class WebSecurityConfig {
                         .anyRequest().permitAll()
                 )
                 .formLogin((form) -> form
-                        .loginPage("/auth/login.html")
+                        .loginPage("/auth/login")
                         .loginProcessingUrl("/auth/signin")
-                        .defaultSuccessUrl("/storeHome/homePage.html", true) // true mi treba ovdje jer inace mi prikaze jquery ili bootstrap response
+                        .defaultSuccessUrl("/storeHome/homePage", true) // true mi treba ovdje jer inace mi prikaze jquery ili bootstrap response
                         .permitAll()
                 )
                 .logout(LogoutConfigurer::permitAll);

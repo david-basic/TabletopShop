@@ -29,7 +29,7 @@ public class HomeController {
     private ItemValidationService itemValidationService;
     private ItemService itemService;
     
-    @GetMapping("/homePage.html")
+    @GetMapping("/homePage")
     public ModelAndView getStoreHomePage() {
         ModelAndView mav = new ModelAndView();
         customSpringEventPublisher.publishCustomEvent("Home page opened!");
@@ -39,7 +39,7 @@ public class HomeController {
         return mav;
     }
     
-    @GetMapping("/browse.html")
+    @GetMapping("/browse")
     public ModelAndView getBrowsePage() {
         ModelAndView mav = new ModelAndView();
         customSpringEventPublisher.publishCustomEvent("Home page opened!");
@@ -48,12 +48,10 @@ public class HomeController {
         return mav;
     }
     
-    @PostMapping("/newItem.html")
+    @PostMapping("/newItem")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ModelAndView saveNewItem(@ModelAttribute @Valid CreateItemFormDto formItemDto, BindingResult bindingResult) {
         ModelAndView mav = new ModelAndView();
-        mav.addObject("item", formItemDto);
-        
         String duplicateError = itemValidationService.validateDuplicateItem(formItemDto, itemRepositoryMongo.findAll());
         
         if (!duplicateError.isEmpty()) {
@@ -62,22 +60,36 @@ public class HomeController {
         }
         
         if (bindingResult.hasErrors()) {
+            mav.addObject("item", formItemDto);
             mav.setViewName("homePage");
-        } else {
-            itemService.createItem(formItemDto);
-            mav.setViewName("redirect:/storeHome/homePage.html");
+            return mav;
         }
+        
+        itemService.createItem(formItemDto);
+        mav.setViewName("redirect:/storeHome/homePage");
         return mav;
     }
     
-    @GetMapping("/cleanSession.html")
+    @PostMapping("/deleteItem")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView deleteItem(@RequestParam String id) {
+        ModelAndView mav = new ModelAndView();
+        
+        itemService.deleteItem(id);
+        
+        mav.setViewName("redirect:/storeHome/homePage");
+        
+        return mav;
+    }
+    
+    @GetMapping("/cleanSession")
     public String cleanSession(SessionStatus sessionStatus, HttpSession session) {
         session.invalidate();
         sessionStatus.setComplete();
-        return "redirect:/storeHome/homePage.html";
+        return "redirect:/storeHome/homePage";
     }
     
-    @GetMapping("/adminPage.html")
+    @GetMapping("/adminPage")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String getStoreAdminPage() {
         return "adminPage";

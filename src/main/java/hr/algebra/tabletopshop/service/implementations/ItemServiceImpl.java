@@ -22,13 +22,13 @@ public class ItemServiceImpl implements ItemService {
     private final UtilitiesService utilitiesService;
     
     @Override
-    public void deleteItem(Integer itemId) {
-        Item deletedItem = mongoTemplate.findById(itemId, Item.class);
+    public void deleteItem(String id) {
+        Item deletedItem = mongoTemplate.findById(id, Item.class);
         if (deletedItem != null) {
-            Integer deletedId = deletedItem.getItemId();
+            Integer deletedItem_ItemId = deletedItem.getItemId();
             itemRepositoryMongo.delete(deletedItem);
             
-            Query query = new Query(Criteria.where("itemId").gt(deletedId));
+            Query query = new Query(Criteria.where("itemId").gt(deletedItem_ItemId));
             List<Item> itemsToUpdateIds = mongoTemplate.find(query, Item.class);
             
             for (Item item : itemsToUpdateIds) {

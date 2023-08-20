@@ -17,14 +17,14 @@ public class PublicHomeController {
     private ItemRepositoryMongo itemRepositoryMongo;
     private CustomSpringEventPublisher customSpringEventPublisher;
     
-    @GetMapping("/home.html")
+    @GetMapping("/home")
     public String openPublicHomePage(Model model) {
         customSpringEventPublisher.publishCustomEvent("Anonymous entered public home page!");
         model.addAttribute("publicItems", itemRepositoryMongo.findAll());
         return "home";
     }
     
-    @GetMapping("/browse.html")
+    @GetMapping("/browse")
     public String openPublicBrowserPage(Model model) {
         customSpringEventPublisher.publishCustomEvent("Anonymous entered public browse page!");
         model.addAttribute("publicItems", itemRepositoryMongo.findAll());

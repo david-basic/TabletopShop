@@ -43,7 +43,7 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
     
     
-    @GetMapping("/login.html")
+    @GetMapping("/login")
     public String openLoginPage(Model model) {
         customSpringEventPublisher.publishCustomEvent("Anonymous authentication page opened!");
         model.addAttribute("loginRequest", new UserLoginRequest());
@@ -89,7 +89,7 @@ public class AuthController {
             mav.addObject("errorMessage", msg.getMessage());
             mav.addObject("userRegistered", registerSuccessDto.getSuccess());
             
-            mav.setViewName("redirect:/auth/login.html");
+            mav.setViewName("redirect:/auth/login");
             
             return mav;
         }
@@ -131,30 +131,8 @@ public class AuthController {
         mav.addObject("response", res);
         mav.addObject("userRegistered", registerSuccessDto.getSuccess());
         mav.addObject("errorMessage", messageResponse.getMessage());
-        mav.setViewName("redirect:/auth/login.html");
+        mav.setViewName("redirect:/auth/login");
         
         return mav;
     }
-    
-    //    @PostMapping("/newUser.html")
-//    public String saveNewUser(Model model, @ModelAttribute @Valid User user, @ModelAttribute RegisterSuccessDto userRegistered, BindingResult bindingResult) {
-//        model.addAttribute("user", user);
-//
-//        String duplicateError = userValidationService.validateDuplicateUser(user, userRepositoryMongo.findAll());
-//
-//        if(!duplicateError.isEmpty()) {
-//            ObjectError error = new ObjectError("registerError", duplicateError);
-//            bindingResult.addError(error);
-//        }
-//
-//        if(bindingResult.hasErrors()){
-//            Objects.requireNonNull(userRegistered).setUserRegistered(false);
-//        } else {
-//            Objects.requireNonNull(userRegistered).setUserRegistered(true);
-//            userRepositoryMongo.save(user);
-//        }
-//        model.addAttribute("userRegistered", userRegistered);
-//        return "redirect:/auth/login.html";
-//    }
-    
 }

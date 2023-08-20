@@ -4,7 +4,7 @@ import hr.algebra.tabletopshop.dto.CreateItemFormDto;
 
 public interface ItemService {
 
-    void deleteItem(Integer itemId);
+    void deleteItem(String id);
     void createItem(CreateItemFormDto item);
 
 }
