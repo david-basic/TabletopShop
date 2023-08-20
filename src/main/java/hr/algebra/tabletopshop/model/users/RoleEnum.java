@@ -1,4 +1,4 @@
-package hr.algebra.tabletopshop.domain.users;
+package hr.algebra.tabletopshop.model.users;
 
 public enum RoleEnum {
     ROLE_USER,

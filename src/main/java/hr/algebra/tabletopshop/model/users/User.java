@@ -1,4 +1,4 @@
-package hr.algebra.tabletopshop.domain.users;
+package hr.algebra.tabletopshop.model.users;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -16,7 +16,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(doNotUseGetters = true)
 @Document("users")
 public class User {
     

@@ -1,4 +1,4 @@
-package hr.algebra.tabletopshop.domain.users;
+package hr.algebra.tabletopshop.model.users;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
 @Setter
-@Document("roles")
 @AllArgsConstructor
 @NoArgsConstructor
+@Document("roles")
 public class Role {
     
     @Id
