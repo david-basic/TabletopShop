@@ -1,8 +1,7 @@
-package hr.algebra.tabletopshop.domain.dto;
+package hr.algebra.tabletopshop.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
