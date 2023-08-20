@@ -1,19 +1,21 @@
 package hr.algebra.tabletopshop.controllers;
 
-import hr.algebra.tabletopshop.domain.items.Item;
+import hr.algebra.tabletopshop.dto.CreateItemFormDto;
+import hr.algebra.tabletopshop.model.items.Item;
 import hr.algebra.tabletopshop.publisher.CustomSpringEventPublisher;
-import hr.algebra.tabletopshop.repository.mongodb.ItemRepositoryMongo;
+import hr.algebra.tabletopshop.repository.ItemRepositoryMongo;
+import hr.algebra.tabletopshop.service.ItemService;
 import hr.algebra.tabletopshop.service.ItemValidationService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -22,35 +24,37 @@ import java.util.List;
 @AllArgsConstructor
 @SessionAttributes("items")
 public class HomeController {
-//    private ItemRepository itemRepository;
     private ItemRepositoryMongo itemRepositoryMongo;
     private CustomSpringEventPublisher customSpringEventPublisher;
     private ItemValidationService itemValidationService;
+    private ItemService itemService;
     
     @GetMapping("/homePage.html")
-    public String getStoreHomePage(Model model) {
+    public ModelAndView getStoreHomePage() {
+        ModelAndView mav = new ModelAndView();
         customSpringEventPublisher.publishCustomEvent("Home page opened!");
-//        model.addAttribute("items", itemRepository.getAllItems());
-        model.addAttribute("items", itemRepositoryMongo.findAll());
-        model.addAttribute("item", new Item());
-        return "homePage";
+        mav.addObject("items", itemRepositoryMongo.findAll());
+        mav.addObject("item", new CreateItemFormDto());
+        mav.setViewName("homePage");
+        return mav;
     }
     
     @GetMapping("/browse.html")
-    public String getBrowsePage(Model model) {
+    public ModelAndView getBrowsePage() {
+        ModelAndView mav = new ModelAndView();
         customSpringEventPublisher.publishCustomEvent("Home page opened!");
-//        model.addAttribute("items", itemRepository.getAllItems());
-        model.addAttribute("items", itemRepositoryMongo.findAll());
-        return "browse";
+        mav.addObject("items", itemRepositoryMongo.findAll());
+        mav.setViewName("browse");
+        return mav;
     }
     
     @PostMapping("/newItem.html")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String saveNewItem(Model model, @ModelAttribute @Valid Item item, BindingResult bindingResult) {
-        model.addAttribute("item", item);
+    public ModelAndView saveNewItem(@ModelAttribute @Valid CreateItemFormDto formItemDto, BindingResult bindingResult) {
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("item", formItemDto);
         
-//        String duplicateError = itemValidationService.validateDuplicateItem(item, itemRepository.getAllItems());
-        String duplicateError = itemValidationService.validateDuplicateItem(item, itemRepositoryMongo.findAll());
+        String duplicateError = itemValidationService.validateDuplicateItem(formItemDto, itemRepositoryMongo.findAll());
         
         if (!duplicateError.isEmpty()) {
             ObjectError error = new ObjectError("globalError", duplicateError);
@@ -58,18 +62,12 @@ public class HomeController {
         }
         
         if (bindingResult.hasErrors()) {
-            return "homePage";
+            mav.setViewName("homePage");
         } else {
-//            itemRepository.saveNewItem(item);
-            
-            
- 
-            //TODO vidi dal je oke ovako dobit Integer iz longa tj dal ce radit
-            Integer newItemId = ((Number)itemRepositoryMongo.count()).intValue();
-            
-            itemRepositoryMongo.save(new Item(newItemId + 1, item.getName(), item.getCategory(), item.getDescription(), item.getQuantity(), item.getPrice()));
-            return "redirect:/storeHome/homePage.html";
+            itemService.createItem(formItemDto);
+            mav.setViewName("redirect:/storeHome/homePage.html");
         }
+        return mav;
     }
     
     @GetMapping("/cleanSession.html")
@@ -89,7 +87,6 @@ public class HomeController {
     @GetMapping("/getItemData")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String getItemData() throws InterruptedException {
-//        List<Item> items = itemRepository.getAllItems();
         List<Item> items = itemRepositoryMongo.findAll();
         Thread.sleep(10000);
         return "{\"message\": \"You have " + items.size() + " items in stock.\"}";
