@@ -1,7 +1,7 @@
-package hr.algebra.tabletopshop.service;
+package hr.algebra.tabletopshop.service.implementations;
 
-import hr.algebra.tabletopshop.domain.users.User;
-import hr.algebra.tabletopshop.repository.mongodb.UserRepositoryMongo;
+import hr.algebra.tabletopshop.model.users.User;
+import hr.algebra.tabletopshop.repository.UserRepositoryMongo;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

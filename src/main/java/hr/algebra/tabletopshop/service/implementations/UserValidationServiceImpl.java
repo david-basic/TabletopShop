@@ -1,6 +1,7 @@
-package hr.algebra.tabletopshop.service;
+package hr.algebra.tabletopshop.service.implementations;
 
-import hr.algebra.tabletopshop.domain.users.User;
+import hr.algebra.tabletopshop.model.users.User;
+import hr.algebra.tabletopshop.service.UserValidationService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

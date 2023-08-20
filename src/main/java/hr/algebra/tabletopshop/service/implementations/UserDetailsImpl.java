@@ -1,7 +1,7 @@
-package hr.algebra.tabletopshop.service;
+package hr.algebra.tabletopshop.service.implementations;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import hr.algebra.tabletopshop.domain.users.User;
+import hr.algebra.tabletopshop.model.users.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
