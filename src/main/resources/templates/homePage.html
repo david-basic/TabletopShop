@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Home page</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/homePage.css}">
 </head>
 <body style="height: 100vh;" class="d-flex text-center">
 <div class="d-flex w-100 h-100 mx-auto flex-column">
@@ -12,89 +12,44 @@
 
     <div class="container">
         <main class="row">
-            <div class="row">
-                <div class="col">
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th scope="col">Id</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Category</th>
-                            <th scope="col">Description</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col">Price</th>
-                            <th scope="col" sec:authorize="hasRole('ROLE_ADMIN')">Action</th>
-                        </tr>
-                        </thead>
-                        <tbody class="table-group-divider align-text-bottom">
-                        <tr th:if="${items.isEmpty()}">
-                            <td colspan="7"> No Items Available</td>
-                        </tr>
-                        <tr th:each="item : ${items}">
-                            <th scope="row" th:text="${item.itemId}"></th>
-                            <td th:text="${item.name}"></td>
-                            <td th:text="${item.category}"></td>
-                            <td th:text="${item.description}"></td>
-                            <td th:text="${item.quantity}"></td>
-                            <td th:text="${item.price} + ' €'"></td>
-                            <td sec:authorize="hasRole('ROLE_ADMIN')">
-                                <form class="d-inline" th:action="@{/storeHome/deleteItem}" method="post">
-                                    <input type="hidden" name="id" th:value="${item.id}">  <!-- ovdje saljem proper id a ne moj id da bi se dobro item deletao -->
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">DELETE</button>
-                                </form>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+            <h1>Welcome!</h1>
+            <h3>Tabletop shop awaits you!</h3>
+            <hr>
+            <div class="items-container">
+                <div th:if="${items.isEmpty()}">
+                    <div class="card" aria-hidden="true" style="width: 18rem;">
+                        <img src="/static/images/no-image.png" th:src="@{images/no-image.png}" class="card-img-top"
+                             alt="no items image">
+                        <div class="card-body">
+                            <h5 class="card-title placeholder-glow">
+                                <span class="placeholder col-6"></span>
+                            </h5>
+                            <p class="card-text placeholder-glow">
+                                <span class="placeholder col-7"></span>
+                                <span class="placeholder col-4"></span>
+                                <span class="placeholder col-4"></span>
+                                <span class="placeholder col-6"></span>
+                                <span class="placeholder col-8"></span>
+                            </p>
+                            <a class="btn btn-primary disabled placeholder col-6" aria-disabled="true"></a>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="col container" sec:authorize="hasRole('ROLE_ADMIN')">
-                    <ul>
-                        <li th:each="err : ${#fields.errors('item.*')}" th:text="${err}" class="text-danger"/>
-                    </ul>
-                    <hr>
-                    <form th:action="@{/storeHome/newItem}" th:object="${item}" method="post">
-                        <label>
-                            Name:
-                            <input type="text" th:field="*{name}" name="item.name" required/>
-                        </label>
-                        <label>
-                            Category:
-                            <select th:field="*{category}">
-                                <option th:each="category : ${T(hr.algebra.tabletopshop.model.items.Category).values()}"
-                                        th:value="${category}" th:text="${category}">
-                                </option>
-                            </select>
-                        </label>
-                        <label>
-                            Description:
-                            <input type="text" th:field="*{description}" name="item.description" required/>
-                        </label>
-                        <label>
-                            Quantity:
-                            <input type="text" th:field="*{quantity}" name="item.quantity" required/>
-                        </label>
-                        <label>
-                            Price:
-                            <input type="text" th:field="*{price}" name="item.price" required/>
-                        </label>
-                        <input type="submit"/>
-                    </form>
+                <div th:each="item : ${items}">
+                    <div class="card" style="width: 18rem;">
+                        <img src="" th:src="@{/images/no-image.png}" class="card-img-top"
+                             alt="no items image">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${item.name}"></h5>
+                            <h6 class="card-subtitle" th:text="${item.category}"></h6>
+                            <p class="card-text" th:text="${item.description}"></p>
+                            <h5 class="card-footer" th:text="${item.price} + '€'"></h5>
+                            <a href="#" class="btn btn-primary">Purchase</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <br>
-            <div class="row justify-content-center" sec:authorize="hasRole('ROLE_ADMIN')">
-                <p id="message"></p>
-            </div>
-            <br>
-            <div class="row justify-content-center">
-                <span><a th:href="@{/storeHome/cleanSession}" sec:authorize="hasRole('ROLE_ADMIN')"
-                         class="link-dark">Clean session</a></span>
-                <span><a th:href="@{/storeHome/adminPage}" sec:authorize="hasRole('ROLE_ADMIN')" class="link-dark">Admin
-                    page</a></span>
-            </div>
-            <div class="row">
-                <h1 th:inline="text">Hello <span th:remove="tag" sec:authentication="name">thymeleaf</span>!</h1>
+
             </div>
         </main>
     </div>
@@ -105,19 +60,4 @@
 <script th:src="@{/webjars/jquery/jquery.js}"></script>
 <script th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
 </body>
-
-<script sec:authorize="hasRole('ROLE_ADMIN')">
-    $(document).ready(function () {
-        $.ajax({
-            url: "/storeHome/getItemData",
-            type: "GET",
-            contentType: "application/json",
-            dataType: "json",
-            success: function (data) {
-                $("#message").text(data.message);
-            }
-        });
-    });
-</script>
-
 </html>

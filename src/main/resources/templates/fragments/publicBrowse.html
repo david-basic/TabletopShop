@@ -10,34 +10,54 @@
 
 <div th:fragment="content">
     <main class="row">
-        <h1>Welcome!</h1>
-        <h3>This is going to be a browsing page for ANONYMOUS users to filter products in more detail.</h3>
+        <h3>Feel free to browse and filter through our wares</h3>
         <hr>
         <div class="row">
             <div class="col">
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Name</th>
-                        <th>Category</th>
-                        <th>Description</th>
-                        <th>Price</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:if="${publicItems.empty}">
-                        <td colspan="7"> No Items Available</td>
-                    </tr>
-                    <tr th:each="pbItem : ${publicItems}">
-                        <td><span th:text="${pbItem.itemId}"> Id </span></td>
-                        <td><span th:text="${pbItem.name}"> Name </span></td>
-                        <td><span th:text="${pbItem.category}"> Category </span></td>
-                        <td><span th:text="${pbItem.description}"> Description </span></td>
-                        <td><span th:text="${pbItem.price}"> Price </span></td>
-                    </tr>
-                    </tbody>
-                </table>
+                <div class="row justify-content-end">
+                    <div class="col-4">
+                        <form th:action="@{/public/categories}" method="post">
+                            <div class="input-group">
+                                <label class="input-group-text" for="categorySelect">Filter by...</label>
+                                <select class="form-select" id="categorySelect" name="selectedCategory">
+                                    <option th:value="all" th:text="all"></option>
+                                    <option th:each="category : ${T(hr.algebra.tabletopshop.model.items.Category).values()}"
+                                            th:value="${category}" th:text="${category}">
+                                    </option>
+                                </select>
+                                <button type="submit" class="btn btn-outline-dark">Filter</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Price</th>
+                        </tr>
+                        </thead>
+                        <tbody class="table-group-divider align-text-bottom">
+                            <tr th:if="${itemsToDisplay.isEmpty()}">
+                                <td colspan="7"> No Items Available</td>
+                            </tr>
+                            <tr th:each="it : ${itemsToDisplay}">
+                                <th scope="row" th:text="${it.itemId}"></th>
+                                <td th:text="${it.name}"></td>
+                                <td th:text="${it.category}"></td>
+                                <td th:text="${it.description}"></td>
+                                <td th:text="${it.quantity}"></td>
+                                <td th:text="${it.price} + ' €'"></td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
             </div>
         </div>
     </main>

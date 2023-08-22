@@ -9,12 +9,11 @@ public class MvcConfig implements WebMvcConfigurer {
     
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/public/home.html").setViewName("home");
-        registry.addViewController("/public/browse.html").setViewName("browse");
-        registry.addViewController("/auth/login.html").setViewName("login");
-        registry.addViewController("/auth/register.html").setViewName("register");
-        registry.addViewController("/storeHome/homePage.html").setViewName("homePage");
-        registry.addViewController("/storeHome/browse.html").setViewName("browse");
-        registry.addViewController("/storeHome/newItem.html").setViewName("newItem");
+        registry.addViewController("/public/home").setViewName("home");
+        registry.addViewController("/public/browse").setViewName("browse");
+        registry.addViewController("/auth/login").setViewName("login");
+        registry.addViewController("/store/homePage").setViewName("homePage");
+        registry.addViewController("/store/browse").setViewName("browse");
+        registry.addViewController("/store/admin/newItem").setViewName("homePage");
     }
 }

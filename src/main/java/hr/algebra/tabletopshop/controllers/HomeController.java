@@ -20,7 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 
 @Controller
-@RequestMapping("/storeHome")
+@RequestMapping("/store")
 @AllArgsConstructor
 @SessionAttributes("items")
 public class HomeController {
@@ -48,7 +48,7 @@ public class HomeController {
         return mav;
     }
     
-    @PostMapping("/newItem")
+    @PostMapping("/admin/newItem")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ModelAndView saveNewItem(@ModelAttribute @Valid CreateItemFormDto formItemDto, BindingResult bindingResult) {
         ModelAndView mav = new ModelAndView();
@@ -61,42 +61,45 @@ public class HomeController {
         
         if (bindingResult.hasErrors()) {
             mav.addObject("item", formItemDto);
-            mav.setViewName("homePage");
+            mav.setViewName("adminPage");
             return mav;
         }
         
         itemService.createItem(formItemDto);
-        mav.setViewName("redirect:/storeHome/homePage");
+        mav.setViewName("redirect:/store/admin/adminPage");
         return mav;
     }
     
-    @PostMapping("/deleteItem")
+    @PostMapping("/admin/deleteItem")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ModelAndView deleteItem(@RequestParam String id) {
         ModelAndView mav = new ModelAndView();
-        
         itemService.deleteItem(id);
-        
-        mav.setViewName("redirect:/storeHome/homePage");
-        
+        mav.setViewName("redirect:/store/admin/adminPage");
         return mav;
     }
     
     @GetMapping("/cleanSession")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String cleanSession(SessionStatus sessionStatus, HttpSession session) {
         session.invalidate();
         sessionStatus.setComplete();
-        return "redirect:/storeHome/homePage";
+        return "redirect:/store/admin/adminPage";
     }
     
-    @GetMapping("/adminPage")
+    @GetMapping("/admin/adminPage")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String getStoreAdminPage() {
-        return "adminPage";
+    public ModelAndView getStoreAdminPage() {
+        ModelAndView mav = new ModelAndView();
+        customSpringEventPublisher.publishCustomEvent("Admin page opened!");
+        mav.addObject("items", itemRepositoryMongo.findAll());
+        mav.addObject("item", new CreateItemFormDto());
+        mav.setViewName("adminPage");
+        return mav;
     }
     
     @ResponseBody
-    @GetMapping("/getItemData")
+    @GetMapping("/admin/getItemData")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String getItemData() throws InterruptedException {
         List<Item> items = itemRepositoryMongo.findAll();

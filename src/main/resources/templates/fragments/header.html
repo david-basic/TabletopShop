@@ -56,10 +56,13 @@
                     <ul class="navbar-nav mb-2 mb-lg-0 col-lg-10" sec:authorize="isAuthenticated()">
                         <li class="nav-item">
                             <a class="nav-link link-light fw-bold" aria-current="page"
-                               th:href="@{/storeHome/homePage}">Home</a>
+                               th:href="@{/store/homePage}">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link link-light fw-bold" th:href="@{/storeHome/browse}">Browse</a>
+                            <a class="nav-link link-light fw-bold" th:href="@{/store/browse}">Browse</a>
+                        </li>
+                        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                            <a class="nav-link link-light fw-bold" th:href="@{/store/admin/adminPage}">Administration</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav justify-content-end mb-2 mb-lg-0 col-lg-2" sec:authorize="isAuthenticated()">
@@ -74,8 +77,8 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <form class="nav-link link-light fw-bold" th:action="@{/logout}" method="post">
-                                <input type="submit" value="Sign Out"/>
+                            <form th:action="@{/logout}" method="post">
+                                <button type="submit" class="btn btn-dark fw-bold">Sign Out</button>
                             </form>
                         </li>
                     </ul>

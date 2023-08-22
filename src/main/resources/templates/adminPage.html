@@ -1,11 +1,121 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
-    <meta charset="UTF-8">
-    <title>AdminPage</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Admin page</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}"/>
 </head>
-<body>
-<h1>This is an Admin page</h1>
-<a href="homePage.html">Click to go back to home.</a>
+<body style="height: 100vh;" class="d-flex text-center">
+<div class="d-flex w-100 h-100 mx-auto flex-column">
+    <div class="mb-auto" th:insert="~{/fragments/header :: header}"></div>
+
+    <div class="container">
+        <main class="row">
+            <div class="row">
+                <div class="col">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody class="table-group-divider align-text-bottom">
+                        <tr th:if="${items.isEmpty()}">
+                            <td colspan="7"> No Items Available</td>
+                        </tr>
+                        <tr th:each="item : ${items}">
+                            <th scope="row" th:text="${item.itemId}"></th>
+                            <td th:text="${item.name}"></td>
+                            <td th:text="${item.category}"></td>
+                            <td th:text="${item.description}"></td>
+                            <td th:text="${item.quantity}"></td>
+                            <td th:text="${item.price} + ' €'"></td>
+                            <td>
+                                <form class="d-inline" th:action="@{/store/admin/deleteItem}" method="post">
+                                    <input type="hidden" name="id" th:value="${item.id}">
+                                    <!-- ovdje saljem proper id a ne moj id da bi se dobro item deletao -->
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">DELETE</button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="col container">
+                    <ul>
+                        <li th:each="err : ${#fields.errors('item.*')}" th:text="${err}" class="text-danger"/>
+                    </ul>
+                    <hr>
+                    <form th:action="@{/store/admin/newItem}" th:object="${item}" method="post">
+                        <label>
+                            Name:
+                            <input type="text" th:field="*{name}" name="item.name" required/>
+                        </label>
+                        <label>
+                            Category:
+                            <select th:field="*{category}">
+                                <option th:each="category : ${T(hr.algebra.tabletopshop.model.items.Category).values()}"
+                                        th:value="${category}" th:text="${category}">
+                                </option>
+                            </select>
+                        </label>
+                        <label>
+                            Description:
+                            <input type="text" th:field="*{description}" name="item.description" required/>
+                        </label>
+                        <label>
+                            Quantity:
+                            <input type="text" th:field="*{quantity}" name="item.quantity" required/>
+                        </label>
+                        <label>
+                            Price:
+                            <input type="text" th:field="*{price}" name="item.price" required/>
+                        </label>
+                        <input type="submit"/>
+                    </form>
+                </div>
+            </div>
+            <br>
+            <div class="row justify-content-center">
+                <p id="message"></p>
+            </div>
+            <br>
+            <div class="row justify-content-center">
+                <span><a th:href="@{/store/cleanSession}" class="link-dark">Clean session</a></span>
+            </div>
+            <div class="row">
+                <h1 th:inline="text">Hello <span th:remove="tag" sec:authentication="name">thymeleaf</span>!</h1>
+            </div>
+        </main>
+    </div>
+
+    <div class="mt-auto" th:insert="~{/fragments/footer :: footer}"></div>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
 </body>
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: "/store/admin/getItemData",
+            type: "GET",
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                $("#message").text(data.message);
+            }
+        });
+    });
+</script>
+
 </html>
