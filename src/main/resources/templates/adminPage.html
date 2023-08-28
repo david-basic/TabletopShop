@@ -12,8 +12,65 @@
 
     <div class="container">
         <main class="row">
-            <div class="row">
-                <div class="col">
+            <div class="col">
+                <div class="row">
+                    <div class="row">
+                        <h1 th:inline="text">Hello <span th:remove="tag" sec:authentication="name">thymeleaf</span>!
+                        </h1>
+                    </div>
+                    <br>
+                    <div class="row justify-content-center">
+                        <p id="message"></p>
+                    </div>
+                    <br>
+                    <div class="row justify-content-center">
+                        <span><a th:href="@{/store/cleanSession}" class="link-dark">Clean session</a></span>
+                    </div>
+                </div>
+
+                <div class="row container">
+                    <ul>
+                        <li th:each="err : ${#fields.errors('item.*')}" th:text="${err}" class="text-danger"/>
+                    </ul>
+                    <hr>
+                    <form th:action="@{/store/admin/newItem}" th:object="${item}" method="post" class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="nameInput">Name</label>
+                            <input class="form-control" id="nameInput" type="text" th:field="*{name}" name="item.name"
+                                   required/>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="categoryInput" class="form-label">Category</label>
+                            <select id="categoryInput" class="form-select" th:field="*{category}">
+                                <option th:each="category : ${T(hr.algebra.tabletopshop.model.items.Category).values()}"
+                                        th:value="${category}" th:text="${category}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="descriptionInput" class="form-label">Description</label>
+                            <input class="form-control" id="descriptionInput" type="text" th:field="*{description}"
+                                   name="item.description" required/>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="quantityInput" class="form-label">Quantity</label>
+                            <input class="form-control" id="quantityInput" type="text" th:field="*{quantity}"
+                                   name="item.quantity" required/>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="priceInput" class="form-label">Price</label>
+                            <input class="form-control" id="priceInput" type="text" th:field="*{price}"
+                                   name="item.price" required/>
+                        </div>
+                        <div class="col-12 justify-content-center">
+                            <button type="submit" class="btn btn-dark">Add item</button>
+                        </div>
+                    </form>
+                </div>
+
+                <hr>
+
+                <div class="row">
                     <table class="table table-hover">
                         <thead>
                         <tr>
@@ -36,7 +93,7 @@
                             <td th:text="${item.category}"></td>
                             <td th:text="${item.description}"></td>
                             <td th:text="${item.quantity}"></td>
-                            <td th:text="${item.price} + ' €'"></td>
+                            <td th:text="${item.price} + '€'"></td>
                             <td>
                                 <form class="d-inline" th:action="@{/store/admin/deleteItem}" method="post">
                                     <input type="hidden" name="id" th:value="${item.id}">
@@ -48,51 +105,6 @@
                         </tbody>
                     </table>
                 </div>
-
-                <div class="col container">
-                    <ul>
-                        <li th:each="err : ${#fields.errors('item.*')}" th:text="${err}" class="text-danger"/>
-                    </ul>
-                    <hr>
-                    <form th:action="@{/store/admin/newItem}" th:object="${item}" method="post">
-                        <label>
-                            Name:
-                            <input type="text" th:field="*{name}" name="item.name" required/>
-                        </label>
-                        <label>
-                            Category:
-                            <select th:field="*{category}">
-                                <option th:each="category : ${T(hr.algebra.tabletopshop.model.items.Category).values()}"
-                                        th:value="${category}" th:text="${category}">
-                                </option>
-                            </select>
-                        </label>
-                        <label>
-                            Description:
-                            <input type="text" th:field="*{description}" name="item.description" required/>
-                        </label>
-                        <label>
-                            Quantity:
-                            <input type="text" th:field="*{quantity}" name="item.quantity" required/>
-                        </label>
-                        <label>
-                            Price:
-                            <input type="text" th:field="*{price}" name="item.price" required/>
-                        </label>
-                        <input type="submit"/>
-                    </form>
-                </div>
-            </div>
-            <br>
-            <div class="row justify-content-center">
-                <p id="message"></p>
-            </div>
-            <br>
-            <div class="row justify-content-center">
-                <span><a th:href="@{/store/cleanSession}" class="link-dark">Clean session</a></span>
-            </div>
-            <div class="row">
-                <h1 th:inline="text">Hello <span th:remove="tag" sec:authentication="name">thymeleaf</span>!</h1>
             </div>
         </main>
     </div>
