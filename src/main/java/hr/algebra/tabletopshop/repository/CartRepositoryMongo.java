@@ -9,13 +9,13 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface CartRepositoryMongo extends MongoRepository<Cart, Integer> {
+public interface CartRepositoryMongo extends MongoRepository<Cart, String> {
     
     Optional<Cart> findByUser(User user);
     
     Boolean existsByUser(User user);
     
-    Optional<Cart> findById(String id);
+    @NotNull Optional<Cart> findById(@NotNull String id);
     
     Optional<Cart> findByCartId(Integer cartId);
     
