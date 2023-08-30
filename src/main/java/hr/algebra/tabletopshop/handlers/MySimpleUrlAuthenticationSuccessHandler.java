@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     protected Log logger = LogFactory.getLog(this.getClass());
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
@@ -43,7 +44,7 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
         
         Map<String, String> roleTargetUrlMap = new HashMap<>();
         roleTargetUrlMap.put("ROLE_USER", "/homePage.html");
-        roleTargetUrlMap.put("ROLE_ADMIN", "/saveNewItem.html");
+        roleTargetUrlMap.put("ROLE_ADMIN", "/newItem.html");
         
         final Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         for (final GrantedAuthority grantedAuthority : authorities) {

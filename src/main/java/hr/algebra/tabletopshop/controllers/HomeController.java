@@ -1,9 +1,11 @@
 package hr.algebra.tabletopshop.controllers;
 
+import hr.algebra.tabletopshop.dto.CartItemDto;
 import hr.algebra.tabletopshop.dto.CreateItemFormDto;
 import hr.algebra.tabletopshop.model.items.Item;
 import hr.algebra.tabletopshop.publisher.CustomSpringEventPublisher;
 import hr.algebra.tabletopshop.repository.ItemRepositoryMongo;
+import hr.algebra.tabletopshop.service.CartService;
 import hr.algebra.tabletopshop.service.ItemService;
 import hr.algebra.tabletopshop.service.ItemValidationService;
 import jakarta.servlet.http.HttpSession;
@@ -17,7 +19,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/store")
@@ -28,6 +32,8 @@ public class HomeController {
     private CustomSpringEventPublisher customSpringEventPublisher;
     private ItemValidationService itemValidationService;
     private ItemService itemService;
+    private CartService cartService;
+    private List<Item> itemsToDisplay;
     
     @GetMapping("/homePage")
     public ModelAndView getStoreHomePage() {
@@ -35,6 +41,8 @@ public class HomeController {
         customSpringEventPublisher.publishCustomEvent("Home page opened!");
         mav.addObject("items", itemRepositoryMongo.findAll());
         mav.addObject("item", new CreateItemFormDto());
+        mav.addObject("cartItemDto", new CartItemDto());
+        mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
         mav.setViewName("homePage");
         return mav;
     }
@@ -42,9 +50,37 @@ public class HomeController {
     @GetMapping("/browse")
     public ModelAndView getBrowsePage() {
         ModelAndView mav = new ModelAndView();
-        customSpringEventPublisher.publishCustomEvent("Home page opened!");
-        mav.addObject("items", itemRepositoryMongo.findAll());
+        customSpringEventPublisher.publishCustomEvent("Authenticated user entered browse page!");
+        
+        mav.addObject("cartItemDto", new CartItemDto());
+        mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
+        
+        //ako user dodje direktno na browse stranicu ili ako nije nađen niti jedan item sa traženom kategorijom
+        if (itemsToDisplay.isEmpty()) {
+            mav.addObject("items", itemRepositoryMongo.findAll());
+            mav.addObject("itemsToDisplay", itemRepositoryMongo.findAll());
+        } else {
+            mav.addObject("itemsToDisplay", itemsToDisplay);
+        }
+        
         mav.setViewName("browse");
+        return mav;
+    }
+    
+    @PostMapping("/categories")
+    public ModelAndView findItemsInCategory(@RequestParam("selectedCategory") String categoryChosen) {
+        ModelAndView mav = new ModelAndView();
+        customSpringEventPublisher.publishCustomEvent("Authenticated user browsed by category!");
+        
+        itemsToDisplay = new ArrayList<>();
+        
+        if (Objects.equals(categoryChosen, "all")) {
+            itemsToDisplay.addAll(itemRepositoryMongo.findAll());
+        } else {
+            itemsToDisplay.addAll(itemRepositoryMongo.findAllByCategory(categoryChosen));
+        }
+        
+        mav.setViewName("redirect:/store/browse");
         return mav;
     }
     

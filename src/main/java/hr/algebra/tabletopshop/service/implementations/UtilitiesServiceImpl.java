@@ -1,5 +1,6 @@
 package hr.algebra.tabletopshop.service.implementations;
 
+import hr.algebra.tabletopshop.model.cart.Cart;
 import hr.algebra.tabletopshop.model.items.Item;
 import hr.algebra.tabletopshop.service.UtilitiesService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,18 @@ public class UtilitiesServiceImpl implements UtilitiesService {
             return lastItem.getItemId() + 1;
         }
         System.out.println("new Item Id: 1");
+        return 1;
+    }
+    
+    @Override
+    public Integer calculateNextCartIdInSequence() {
+        Query query = new Query().with(Sort.by(Sort.Order.desc("cartId"))).limit(1);
+        Cart lastCart = Objects.requireNonNull(mongoTemplate).findOne(query, Cart.class);
+        if (lastCart != null) {
+            System.out.println("new Cart Id: " + lastCart.getCartId() + 1);
+            return lastCart.getCartId() + 1;
+        }
+        System.out.println("new Cart Id: 1");
         return 1;
     }
 }

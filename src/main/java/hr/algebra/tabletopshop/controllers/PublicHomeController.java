@@ -1,9 +1,12 @@
 package hr.algebra.tabletopshop.controllers;
 
+import hr.algebra.tabletopshop.dto.CartItemDto;
+import hr.algebra.tabletopshop.model.cart.Cart;
 import hr.algebra.tabletopshop.model.items.Item;
 import hr.algebra.tabletopshop.publisher.CustomSpringEventPublisher;
 import hr.algebra.tabletopshop.repository.ItemRepositoryMongo;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -16,10 +19,11 @@ import java.util.Objects;
 @RequestMapping("/public")
 @AllArgsConstructor
 @SessionAttributes("publicItems")
+@PreAuthorize("isAnonymous()")
 public class PublicHomeController {
     private ItemRepositoryMongo itemRepositoryMongo;
     private CustomSpringEventPublisher customSpringEventPublisher;
-    
+    private final Cart cart;
     private List<Item> itemsToDisplay;
     
     @GetMapping("/home")
@@ -28,6 +32,8 @@ public class PublicHomeController {
         customSpringEventPublisher.publishCustomEvent("Anonymous entered public home page!");
         
         mav.addObject("publicItems", itemRepositoryMongo.findAll());
+        mav.addObject("cartItemDto", new CartItemDto());
+        mav.addObject("cartItemCount", cart.getCartItems().size());
         
         mav.setViewName("home");
         return mav;
@@ -37,6 +43,9 @@ public class PublicHomeController {
     public ModelAndView openPublicBrowserPage() {
         ModelAndView mav = new ModelAndView();
         customSpringEventPublisher.publishCustomEvent("Anonymous entered public browse page!");
+        
+        mav.addObject("cartItemDto", new CartItemDto());
+        mav.addObject("cartItemCount", cart.getCartItems().size());
         
         //ako user dodje direktno na browse stranicu ili ako nije nađen niti jedan item sa traženom kategorijom
         if (itemsToDisplay.isEmpty()) {
@@ -66,5 +75,4 @@ public class PublicHomeController {
         mav.setViewName("redirect:/public/browse");
         return mav;
     }
-    
 }

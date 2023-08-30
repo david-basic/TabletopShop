@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -33,25 +33,25 @@ public class UserDetailsImpl implements UserDetails {
     private String password;
     
     @EqualsAndHashCode.Exclude
-    private Collection<? extends GrantedAuthority> authorities;
+    private Collection<? extends GrantedAuthority> roles;
     
     public static UserDetailsImpl build(User user) {
-        System.out.println(user);
-        List<GrantedAuthority> authorities = user.getRoles().stream()
+        //System.out.println(user);
+        Set<GrantedAuthority> roles = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName().name()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
         
         return new UserDetailsImpl(
                 user.getId(),
                 user.getUsername(),
                 user.getPassword(),
-                authorities);
+                roles);
     }
     
     
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return roles;
     }
     
     @Override

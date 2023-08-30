@@ -62,12 +62,10 @@
                             <a class="nav-link link-light fw-bold" th:href="@{/store/browse}">Browse</a>
                         </li>
                         <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
-                            <div class="vr"></div>
                             <a class="nav-link link-light fw-bold" th:href="@{/store/admin/adminPage}">Item administration</a>
                         </li>
                         <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
                             <a class="nav-link link-light fw-bold" th:href="@{#}">Store history</a>
-                            <div class="vr"></div>
                         </li>
                     </ul>
                     <ul class="navbar-nav justify-content-end mb-2 mb-lg-0 col-lg-2" sec:authorize="isAuthenticated()">
