@@ -25,4 +25,6 @@ public interface CartService {
     ChangeItemQuantityDto incrementItemInCart(Item item);
     
     ChangeItemQuantityDto decrementItemInCart(Item item);
+    
+    void deleteCartByUser(User user);
 }

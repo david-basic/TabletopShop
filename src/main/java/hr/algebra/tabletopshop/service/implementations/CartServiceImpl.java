@@ -70,26 +70,24 @@ public class CartServiceImpl implements CartService {
     @Override
     public Cart getCartByUser(User user) {
         if (cartRepositoryMongo.findByUser(user).isPresent()) {
-            Cart dbCart = cartRepositoryMongo.findByUser(user).orElseThrow(DbEntityNotFoundException::new);
-            cartItemRepositoryMongo.deleteAll(dbCart.getCartItems());
-            cartRepositoryMongo.delete(dbCart);
+            return cartRepositoryMongo.findByUser(user).orElseThrow(DbEntityNotFoundException::new);
+        } else {
+            Cart newCart = Cart.copyCart(cart);
+            newCart.setUser(user);
+            newCart.setCartId(calculateNextCartIdInSequence());
+            newCart.setCartItems(new HashSet<>());
+            cartRepositoryMongo.save(newCart);
+            
+            for (var ci : cart.getCartItems()) {
+                ci.setCart(newCart);
+                cartItemRepositoryMongo.save(ci);
+            }
+            
+            newCart.setCartItems(new HashSet<>(cartItemRepositoryMongo.findAllByCart(newCart)));
+            
+            cartRepositoryMongo.save(newCart);
+            return newCart;
         }
-        
-        Cart newCart = Cart.copyCart(cart);
-        newCart.setUser(user);
-        newCart.setCartId(calculateNextCartIdInSequence());
-        newCart.setCartItems(new HashSet<>());
-        cartRepositoryMongo.save(newCart);
-        
-        for(var ci : cart.getCartItems()) {
-            ci.setCart(newCart);
-            cartItemRepositoryMongo.save(ci);
-        }
-        
-        newCart.setCartItems(new HashSet<>(cartItemRepositoryMongo.findAllByCart(newCart)));
-        
-        cartRepositoryMongo.save(newCart);
-        return newCart;
     }
     
     @Override
@@ -114,7 +112,7 @@ public class CartServiceImpl implements CartService {
             CartItem cartItem = new CartItem(calculateNextCartItemIdInSequence(), item, quantity, cart);
             cartItemRepositoryMongo.save(cartItem);
             
-            cart.addToTotal(cartItem.getTotal());
+            cart.addItem(cartItem);
             cartRepositoryMongo.save(cart);
         });
     }
@@ -164,6 +162,15 @@ public class CartServiceImpl implements CartService {
             
             return new ChangeItemQuantityDto(quantity == 0 ? 0.0 : it.getTotal(), cart.getTotalPrice());
         }).orElse(new ChangeItemQuantityDto(0.0, cart.getTotalPrice()));
+    }
+    
+    @Override
+    public void deleteCartByUser(User user) {
+        if (cartRepositoryMongo.findByUser(user).isPresent()) {
+            Cart dbCart = cartRepositoryMongo.findByUser(user).orElseThrow(DbEntityNotFoundException::new);
+            cartItemRepositoryMongo.deleteAll(dbCart.getCartItems());
+            cartRepositoryMongo.delete(dbCart);
+        }
     }
     
     private Integer calculateNextCartItemIdInSequence() {
