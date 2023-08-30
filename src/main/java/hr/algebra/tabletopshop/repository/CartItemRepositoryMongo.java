@@ -10,9 +10,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface CartItemRepositoryMongo extends MongoRepository<CartItem, Integer> {
-    
-    Boolean existsByCartItemId(Integer id);
+public interface CartItemRepositoryMongo extends MongoRepository<CartItem, String> {
     
     Optional<CartItem> findByCartAndItem(Cart cart, Item item);
     
@@ -23,6 +21,8 @@ public interface CartItemRepositoryMongo extends MongoRepository<CartItem, Integ
     })
         // total nije atribut na cart objektu jer ne treba biti, total je samo alias za sumu koja ce se vratiti
     Double calculateTotalPriceForCart(String id);
+    
+    List<CartItem> findAllByCart(Cart cart);
     
     @Override
     @NotNull
