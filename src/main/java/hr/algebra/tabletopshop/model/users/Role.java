@@ -7,12 +7,14 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Document("roles")
-public class Role {
+public class Role implements Serializable {
     
     @Id
     private Integer id;

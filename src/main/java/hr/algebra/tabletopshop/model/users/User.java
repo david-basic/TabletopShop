@@ -2,14 +2,12 @@ package hr.algebra.tabletopshop.model.users;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,7 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @EqualsAndHashCode(doNotUseGetters = true)
 @Document("users")
-public class User {
+public class User implements Serializable {
     
     @Id
     @EqualsAndHashCode.Exclude
@@ -41,4 +39,5 @@ public class User {
         this.username = username;
         this.password = password;
     }
+    
 }
