@@ -1,6 +1,7 @@
 package hr.algebra.tabletopshop.controllers;
 
 import hr.algebra.tabletopshop.dto.RegisterSuccessDto;
+import hr.algebra.tabletopshop.model.cart.Cart;
 import hr.algebra.tabletopshop.model.users.Role;
 import hr.algebra.tabletopshop.model.users.RoleEnum;
 import hr.algebra.tabletopshop.model.users.User;
@@ -41,7 +42,7 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
     private RoleRepositoryMongo roleRepositoryMongo;
     private PasswordEncoder passwordEncoder;
-    
+    private final Cart cart;
     
     @GetMapping("/login")
     public String openLoginPage(Model model) {
@@ -49,6 +50,7 @@ public class AuthController {
         model.addAttribute("loginRequest", new UserLoginRequest());
         model.addAttribute("registerRequest", new UserRegisterRequest());
         model.addAttribute("userRegistered", new RegisterSuccessDto(false));
+        model.addAttribute("cartItemCount", cart.getCartItems().size());
         return "login";
     }
     
