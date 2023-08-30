@@ -1,18 +1,12 @@
 package hr.algebra.tabletopshop.model.cart;
 
 import hr.algebra.tabletopshop.model.users.User;
-import hr.algebra.tabletopshop.repository.CartRepositoryMongo;
-import hr.algebra.tabletopshop.service.implementations.CartServiceImpl;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.query.Query;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;

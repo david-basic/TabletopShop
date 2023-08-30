@@ -1,17 +1,12 @@
 package hr.algebra.tabletopshop.model.cart;
 
 import hr.algebra.tabletopshop.model.items.Item;
-import hr.algebra.tabletopshop.service.CartService;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 @Getter
 @Setter
