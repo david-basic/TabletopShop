@@ -3,10 +3,14 @@ package hr.algebra.tabletopshop.controllers;
 import hr.algebra.tabletopshop.dto.CartItemDto;
 import hr.algebra.tabletopshop.dto.ChangeItemQuantityDto;
 import hr.algebra.tabletopshop.dto.RemoveItemFromCartDto;
+import hr.algebra.tabletopshop.exceptions.DbEntityNotFoundException;
 import hr.algebra.tabletopshop.model.cart.Cart;
 import hr.algebra.tabletopshop.model.cart.CartItem;
 import hr.algebra.tabletopshop.model.items.Item;
+import hr.algebra.tabletopshop.model.users.User;
 import hr.algebra.tabletopshop.publisher.CustomSpringEventPublisher;
+import hr.algebra.tabletopshop.repository.CartItemRepositoryMongo;
+import hr.algebra.tabletopshop.repository.CartRepositoryMongo;
 import hr.algebra.tabletopshop.service.CartService;
 import hr.algebra.tabletopshop.service.CurrentUserService;
 import hr.algebra.tabletopshop.service.ItemService;
@@ -59,6 +63,7 @@ public class CartController {
     }
     
     @PostMapping("/anon/addToCart")
+    @PreAuthorize("isAnonymous()")
     public ModelAndView addItemToCartAnon(@ModelAttribute @Valid CartItemDto cartItemDto) {
         ModelAndView mav = new ModelAndView();
         Item item = itemService.getItemById(cartItemDto.getId());
@@ -130,5 +135,15 @@ public class CartController {
                 return ResponseEntity.ok(new RemoveItemFromCartDto(cart.getTotalPrice()));
             }).orElse(ResponseEntity.notFound().build());
         }
+    }
+    
+    @PostMapping("/deleteOnLogout")
+    @ResponseBody
+    public ResponseEntity<?> deleteCartOnLogout() {
+        User currentUser = currentUserService.getCurrentUser();
+        
+        cartService.deleteCartByUser(currentUser);
+        
+        return ResponseEntity.ok().body("Cart successfully deleted");
     }
 }
