@@ -1,6 +1,5 @@
 package hr.algebra.tabletopshop.configuration;
 
-import hr.algebra.tabletopshop.service.implementations.UserDetailsServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -29,7 +29,7 @@ import java.util.List;
 @AllArgsConstructor
 public class WebSecurityConfig {
     
-    private UserDetailsServiceImpl userDetailsService;
+    private UserDetailsService userDetailsService;
     
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
@@ -53,7 +53,7 @@ public class WebSecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/store/**").authenticated()
-                        .requestMatchers("/public/**", "/auth/**", "/resources/**", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/public/**", "/auth/**", "/resources/**", "/css/**", "/js/**", "/images/**", "/cart/**").permitAll()
                         .anyRequest().permitAll()
                 )
                 .formLogin((form) -> form
