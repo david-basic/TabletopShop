@@ -3,7 +3,6 @@ package hr.algebra.tabletopshop.repository;
 import hr.algebra.tabletopshop.model.cart.Cart;
 import hr.algebra.tabletopshop.model.users.User;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
