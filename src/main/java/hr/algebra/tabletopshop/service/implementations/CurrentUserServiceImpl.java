@@ -38,7 +38,6 @@ public class CurrentUserServiceImpl implements CurrentUserService {
                 id++;
             }
             User user = new User(princ.getId(), princ.getUsername(), princ.getPassword(), roles);
-            System.out.println(user);
             return user;
         } else {
             // user is anonymous or unknown principal
