@@ -51,4 +51,12 @@ public class Item implements Serializable {
         this.quantity = quantity;
         this.price = price;
     }
+    
+    public void addQuantityToStock(Integer quantity) {
+        this.quantity += quantity;
+    }
+    
+    public void removeQuantityFromStock(Integer quantity) {
+        this.quantity -= quantity;
+    }
 }

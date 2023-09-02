@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap css -->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/purchasePage.css}">
+    <title>Purchase page</title>
+</head>
+<body style="height: 100vh;" class="d-flex text-center">
+<div class="d-flex w-100 h-100 mx-auto flex-column">
+    <div class="mb-auto" th:insert="~{/fragments/header :: header}"></div>
+
+    <div class="container">
+        <main class="row">
+            <h1>Purchase</h1>
+            <hr>
+            <h4>We require a bit more information to fulfill your purchase!</h4>
+            <hr>
+            <div class="accordion" id="purchaseAccordion">
+                <div class="accordion-item" id="purchase">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#purchaseSummary" aria-expanded="true"
+                                aria-controls="purchaseSummary">
+                            Purchase summary
+                        </button>
+                    </h2>
+                    <div id="purchaseSummary" class="accordion-collapse collapse show">
+                        <div class="accordion-body">
+                            <ul class="list-group">
+                                <li th:each="cartItem : ${cart.getCartItems()}"
+                                    class="list-group-item d-flex justify-content-between lh-sm">
+                                    <div>
+                                        <h6 class="my-0" th:text="${cartItem.item.name}"></h6>
+                                        <small class="text-body-secondary"
+                                               th:text="${cartItem.item.description}"></small>
+                                    </div>
+                                    <span class="text-body-secondary"
+                                          th:text="${cartItem.getTotal() + '€'}"></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Purchase total</span>
+                                    <strong th:text="${cart.getTotalPrice() + '€'}"></strong>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <form class="needs-validation" th:action="@{#}" method="post" th:object="${purchaseFormDto}" novalidate>
+                    <div class="accordion-item" id="delivery">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fw-bold collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#deliveryDetails" aria-expanded="false"
+                                    aria-controls="deliveryDetails">
+                                Delivery details
+                            </button>
+                        </h2>
+                        <div id="deliveryDetails" class="accordion-collapse collapse">
+                            <div class="accordion-body has-validation">
+                                <input type="hidden" name="userId" th:value="${cart.getUser().getId()}"/>
+                                <div class="row g-3">
+                                    <div class="col-sm-6">
+                                        <label for="firstName" class="form-label">First name</label>
+                                        <input th:field="*{firstName}" type="text" class="form-control" id="firstName"
+                                               placeholder="" name="firstName" required>
+                                        <div class="invalid-feedback">
+                                            <p class="text-danger"
+                                               th:each="error : ${#fields.errors('firstName')}"
+                                               th:text="${error}"></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label for="lastName" class="form-label">Last name</label>
+                                        <input th:field="*{lastName}" type="text" class="form-control" id="lastName"
+                                               name="lastName" placeholder="" required>
+                                        <div class="invalid-feedback">
+                                            <p class="text-danger"
+                                               th:each="error : ${#fields.errors('lastName')}"
+                                               th:text="${error}"></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" th:field="*{email}" class="form-control" id="email"
+                                               name="email" placeholder="you@example.com" required>
+                                        <div class="invalid-feedback">
+                                            <p class="text-danger"
+                                               th:each="error : ${#fields.errors('email')}"
+                                               th:text="${error}"></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label for="address1" class="form-label">Address</label>
+                                        <input th:field="*{address1}" type="text" name="address1"
+                                               class="form-control" id="address1" placeholder="Ulica 123" required>
+                                        <div class="invalid-feedback">
+                                            <p class="text-danger"
+                                               th:each="error : ${#fields.errors('address1')}"
+                                               th:text="${error}"></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label for="address2" class="form-label">Address 2 <span
+                                                class="text-body-secondary">(Optional)</span></label>
+                                        <input th:field="*{address2}" type="text" name="address2"
+                                               class="form-control" id="address2" placeholder="Apartman Apartmanović">
+                                        <div class="invalid-feedback">
+                                            <p class="text-danger"
+                                               th:each="error : ${#fields.errors('address2')}"
+                                               th:text="${error}"></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <label for="countyName" class="form-label">County</label>
+                                        <input th:field="*{county}" type="text" name="purchaseFormDto.county"
+                                               class="form-control" id="countyName"
+                                               placeholder="Županska županija" required>
+                                        <div class="invalid-feedback">
+                                            <p class="text-danger"
+                                               th:each="error : ${#fields.errors('county')}"
+                                               th:text="${error}"></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <label for="zipCode" class="form-label">Zip</label>
+                                        <input th:field="*{zipCode}" type="text" name="zipCode"
+                                               class="form-control" id="zipCode" placeholder="" required>
+                                        <div class="invalid-feedback">
+                                            <p class="text-danger"
+                                               th:each="error : ${#fields.errors('zipCode')}"
+                                               th:text="${error}"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item" id="payment">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fw-bold collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#paymentMethod" aria-expanded="false" aria-controls="paymentMethod">
+                                Payment method
+                            </button>
+                        </h2>
+                        <div id="paymentMethod" class="accordion-collapse collapse">
+                            <div class="accordion-body has-validation">
+                                <div class="align-content-center">
+                                    <label for="paymentMethodInput" class="form-label">Payment method</label>
+                                    <select id="paymentMethodInput" class="form-select" name="paymentMethod"
+                                            th:field="*{paymentMethod}" required>
+                                        <option th:each="paymentMethod : ${T(hr.algebra.tabletopshop.model.purchase.PaymentMethod).values()}"
+                                                th:value="${paymentMethod}" th:text="${paymentMethod.getName()}">
+                                        </option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        <p class="text-danger"
+                                           th:each="error : ${#fields.errors('paymentMethod')}"
+                                           th:text="${error}"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-dark mt-2" type="submit">FINISH PURCHASE</button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <div class="mt-auto" th:insert="~{/fragments/footer :: footer}"></div>
+</div>
+<script th:src="@{/webjars/jquery/jquery.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
+<script>
+    (() => {
+        const forms = document.querySelectorAll('.needs-validation')
+
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
+</body>
+</html>

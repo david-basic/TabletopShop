@@ -52,7 +52,7 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/store/**").authenticated()
+                        .requestMatchers("/store/**", "/purchase/**").authenticated()
                         .requestMatchers("/public/**", "/auth/**", "/resources/**", "/css/**", "/js/**", "/images/**", "/cart/**").permitAll()
                         .anyRequest().permitAll()
                 )

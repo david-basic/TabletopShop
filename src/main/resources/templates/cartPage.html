@@ -20,7 +20,7 @@
         <main class="row">
             <h1>Cart</h1>
             <hr>
-            <h4>This is where you'll see items before your purchase!</h4>
+            <h4>This is where you'll see and manage your chosen items!</h4>
             <span class="text-danger fw-bold">Before you are able to purchase you will have to SIGN IN</span>
             <hr>
             <table class="table table-hover" id="cartTable">
@@ -156,11 +156,10 @@
                 <h3 id="cartTotal" th:text="'Cart total: ' + ${cart.totalPrice} + '€'"></h3>
             </div>
             <div class="row" th:if="${!cart.getCartItems().isEmpty()}">
-                <form th:action="@{/auth/login}" method="post" sec:authorize="isAnonymous()">
+                <form th:action="@{/auth/login}" method="get" sec:authorize="isAnonymous()">
                     <button type="submit" class="btn btn-dark">Sign in to purchase</button>
                 </form>
-                <form th:action="@{#}" method="post" sec:authorize="isAuthenticated()">
-                    <input type="hidden" th:value="${cart}">
+                <form th:action="@{/purchase/get}" method="get" sec:authorize="isAuthenticated()">
                     <button type="submit" id="purchaseButton" class="btn btn-dark">Purchase</button>
                 </form>
             </div>

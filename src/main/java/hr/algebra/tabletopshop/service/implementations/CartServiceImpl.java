@@ -106,7 +106,7 @@ public class CartServiceImpl implements CartService {
         cartItemRepositoryMongo.findByCartAndItem(cart, item).ifPresentOrElse(cartItem -> {
             cartItem.addQuantity(quantity);
             cartItemRepositoryMongo.save(cartItem);
-            cart.addToTotal(item.getPrice() * quantity);
+            cart.addItem(cartItem);
             cartRepositoryMongo.save(cart);
         }, () -> {
             CartItem cartItem = new CartItem(calculateNextCartItemIdInSequence(), item, quantity, cart);
