@@ -1,6 +1,8 @@
 package hr.algebra.tabletopshop.configuration;
 
+import hr.algebra.tabletopshop.converter.PaymentMethodStringToEnumConverter;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -15,5 +17,10 @@ public class MvcConfig implements WebMvcConfigurer {
         registry.addViewController("/store/homePage").setViewName("homePage");
         registry.addViewController("/store/browse").setViewName("browse");
         registry.addViewController("/store/admin/newItem").setViewName("homePage");
+    }
+    
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(new PaymentMethodStringToEnumConverter());
     }
 }
