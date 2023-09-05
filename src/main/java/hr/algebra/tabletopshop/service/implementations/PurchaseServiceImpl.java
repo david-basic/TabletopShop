@@ -94,6 +94,7 @@ public class PurchaseServiceImpl implements PurchaseService {
                                                                           .address2(purchaseFormDto.getAddress2())
                                                                           .county(purchaseFormDto.getCounty())
                                                                           .zipCode(purchaseFormDto.getZipCode())
+                                                                          .paymentMethod(purchaseFormDto.getPaymentMethod())
                                                                           .purchaseItems(new HashSet<>())
                                                                           .build());
             
