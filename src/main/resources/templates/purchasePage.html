@@ -52,7 +52,7 @@
                         </div>
                     </div>
                 </div>
-                <form class="needs-validation" th:action="@{#}" method="post" th:object="${purchaseFormDto}" novalidate>
+                <form class="needs-validation" th:action="@{/purchase/checkout}" method="post" th:object="${purchaseFormDto}" novalidate>
                     <div class="accordion-item" id="delivery">
                         <h2 class="accordion-header">
                             <button class="accordion-button fw-bold collapsed" type="button" data-bs-toggle="collapse"
@@ -121,9 +121,21 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-6">
+                                    <div class="col-4">
+                                        <label for="city" class="form-label">City</label>
+                                        <input th:field="*{city}" type="text" name="city"
+                                               class="form-control" id="city"
+                                               placeholder="Gradski grad" required>
+                                        <div class="invalid-feedback">
+                                            <p class="text-danger"
+                                               th:each="error : ${#fields.errors('city')}"
+                                               th:text="${error}"></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-4">
                                         <label for="countyName" class="form-label">County</label>
-                                        <input th:field="*{county}" type="text" name="purchaseFormDto.county"
+                                        <input th:field="*{county}" type="text" name="county"
                                                class="form-control" id="countyName"
                                                placeholder="Županska županija" required>
                                         <div class="invalid-feedback">
@@ -133,7 +145,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-6">
+                                    <div class="col-4">
                                         <label for="zipCode" class="form-label">Zip</label>
                                         <input th:field="*{zipCode}" type="text" name="zipCode"
                                                class="form-control" id="zipCode" placeholder="" required>
@@ -155,20 +167,14 @@
                             </button>
                         </h2>
                         <div id="paymentMethod" class="accordion-collapse collapse">
-                            <div class="accordion-body has-validation">
+                            <div class="accordion-body">
                                 <div class="align-content-center">
                                     <label for="paymentMethodInput" class="form-label">Payment method</label>
-                                    <select id="paymentMethodInput" class="form-select" name="paymentMethod"
-                                            th:field="*{paymentMethod}" required>
+                                    <select id="paymentMethodInput" class="form-select" th:field="*{paymentMethod}">
                                         <option th:each="paymentMethod : ${T(hr.algebra.tabletopshop.model.purchase.PaymentMethod).values()}"
-                                                th:value="${paymentMethod}" th:text="${paymentMethod.getName()}">
+                                                th:value="${paymentMethod}" th:text="${paymentMethod.getDisplayName()}">
                                         </option>
                                     </select>
-                                    <div class="invalid-feedback">
-                                        <p class="text-danger"
-                                           th:each="error : ${#fields.errors('paymentMethod')}"
-                                           th:text="${error}"></p>
-                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -13,12 +13,15 @@ import java.io.Serializable;
 @NoArgsConstructor
 @EqualsAndHashCode(doNotUseGetters = true, onlyExplicitlyIncluded = true)
 @Document("cartitems")
+@ToString(doNotUseGetters = true)
 public class CartItem implements Serializable{
     
     @Id
+    @ToString.Exclude
     private String id;
     
     @EqualsAndHashCode.Include
+    @ToString.Exclude
     private Integer cartItemId;
     
     private Item item;

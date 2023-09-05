@@ -17,12 +17,15 @@ import java.util.Set;
 @NoArgsConstructor(force = true)
 @EqualsAndHashCode(doNotUseGetters = true, onlyExplicitlyIncluded = true)
 @Document("carts")
+@ToString(doNotUseGetters = true)
 public class Cart implements Serializable{
     
     @Id
+    @ToString.Exclude
     private String id;
     
     @EqualsAndHashCode.Include
+    @ToString.Exclude
     private Integer cartId;
     
     @EqualsAndHashCode.Include
@@ -32,6 +35,7 @@ public class Cart implements Serializable{
     private Double totalPrice;
     
     @DBRef
+    @ToString.Exclude
     private Set<CartItem> cartItems;
     
     @Builder

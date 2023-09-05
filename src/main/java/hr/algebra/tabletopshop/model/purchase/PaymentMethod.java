@@ -5,19 +5,19 @@ public enum PaymentMethod {
     PAYPAL("PayPal"),
     PAY_ON_DELIVERY("Pay on delivery");
     
-    private final String name;
+    private final String displayName;
     
-    PaymentMethod(String name) {
-        this.name = name;
+    PaymentMethod(String displayName) {
+        this.displayName = displayName;
     }
     
-    public String getName() {
-        return name;
+    public String getDisplayName() {
+        return displayName;
     }
     
     @Override
     public String toString() {
-        return name;
+        return displayName;
     }
     
 }

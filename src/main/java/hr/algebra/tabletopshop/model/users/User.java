@@ -16,10 +16,12 @@ import java.util.Set;
 @NoArgsConstructor
 @EqualsAndHashCode(doNotUseGetters = true)
 @Document("users")
+@ToString(doNotUseGetters = true)
 public class User implements Serializable {
     
     @Id
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Integer id;
     
     @NotNull(message = "Username must exist!")
@@ -29,10 +31,12 @@ public class User implements Serializable {
     @NotNull(message = "Password must exist!")
     @Size(min = 8, message = "Password must have 8 characters at least!")
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private String password;
     
     @NotNull
     @DBRef
+    @ToString.Exclude
     private Set<Role> roles = new HashSet<>();
     
     public User(@NotNull String username, @NotNull String password) {
