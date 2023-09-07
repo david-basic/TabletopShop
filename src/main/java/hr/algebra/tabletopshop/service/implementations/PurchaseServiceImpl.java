@@ -81,7 +81,7 @@ public class PurchaseServiceImpl implements PurchaseService {
         User currentUser = currentUserService.getCurrentUser();
         Cart currentUserCart = cartService.getCurrentUserCart();
         
-        if (purchaseFormDto.getPaymentMethod() == PaymentMethod.PAY_ON_DELIVERY) {
+        if (purchaseFormDto.getPaymentMethod().equals(PaymentMethod.PAY_ON_DELIVERY.getDisplayName())) {
             Purchase savedPurchase = purchaseRepositoryMongo.save(Purchase.builder()
                                                                           .user(currentUser)
                                                                           .purchaseId(calculateNextPurchaseIdInSequence())
@@ -94,7 +94,7 @@ public class PurchaseServiceImpl implements PurchaseService {
                                                                           .address2(purchaseFormDto.getAddress2())
                                                                           .county(purchaseFormDto.getCounty())
                                                                           .zipCode(purchaseFormDto.getZipCode())
-                                                                          .paymentMethod(purchaseFormDto.getPaymentMethod())
+                                                                          .paymentMethod(PaymentMethod.PAY_ON_DELIVERY)
                                                                           .purchaseItems(new HashSet<>())
                                                                           .build());
             
@@ -128,7 +128,7 @@ public class PurchaseServiceImpl implements PurchaseService {
                     .purchaseTotal(currentUserCart.getTotalPrice())
                     .address1(purchaseFormDto.getAddress1())
                     .address2(purchaseFormDto.getAddress2())
-                    .paymentMethod(purchaseFormDto.getPaymentMethod())
+                    .paymentMethod(PaymentMethod.PAYPAL)
                     .county(purchaseFormDto.getCounty())
                     .zipCode(purchaseFormDto.getZipCode()).build();
             purchaseRepositoryMongo.save(newPurchase);
