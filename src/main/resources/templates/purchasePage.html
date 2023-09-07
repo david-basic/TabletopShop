@@ -172,7 +172,7 @@
                                     <label for="paymentMethodInput" class="form-label">Payment method</label>
                                     <select id="paymentMethodInput" class="form-select" th:field="*{paymentMethod}">
                                         <option th:each="paymentMethod : ${T(hr.algebra.tabletopshop.model.purchase.PaymentMethod).values()}"
-                                                th:value="${paymentMethod}" th:text="${paymentMethod.getDisplayName()}">
+                                                th:value="${paymentMethod}" th:text="${paymentMethod}">
                                         </option>
                                     </select>
                                 </div>

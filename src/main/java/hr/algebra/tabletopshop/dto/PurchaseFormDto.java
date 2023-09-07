@@ -46,7 +46,7 @@ public class PurchaseFormDto {
     private Integer zipCode;
     
     @NotNull(message = "Payment method must be assigned!")
-    private PaymentMethod paymentMethod;
+    private String paymentMethod;
     
     private String userId;
     

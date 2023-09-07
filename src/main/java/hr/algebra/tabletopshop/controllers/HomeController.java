@@ -140,6 +140,12 @@ public class HomeController {
     public String getItemData() throws InterruptedException {
         List<Item> items = itemRepositoryMongo.findAll();
         Thread.sleep(10000);
-        return "{\"message\": \"You have " + items.size() + " items in stock.\"}";
+        int size = 0;
+        for (var item : items) {
+            if (item.getQuantity() > 0) {
+                size++;
+            }
+        }
+        return "{\"message\": \"You have " + size + " items in stock.\"}";
     }
 }
