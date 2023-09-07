@@ -9,7 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.Errors;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -40,9 +40,9 @@ public class PurchaseController {
     }
     
     @PostMapping("/checkout")
-    public ModelAndView checkout(@ModelAttribute @Valid PurchaseFormDto purchaseFormDto, Errors errors) {
+    public ModelAndView checkout(@ModelAttribute @Valid PurchaseFormDto purchaseFormDto, BindingResult bindingResult) {
         ModelAndView mav = new ModelAndView();
-        if (errors.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
             mav.addObject("cart", cartService.getCurrentUserCart());
             mav.addObject("purchaseFormDto", purchaseFormDto);
