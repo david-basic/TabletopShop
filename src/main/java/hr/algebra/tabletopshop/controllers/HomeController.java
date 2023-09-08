@@ -2,6 +2,7 @@ package hr.algebra.tabletopshop.controllers;
 
 import hr.algebra.tabletopshop.dto.CartItemDto;
 import hr.algebra.tabletopshop.dto.CreateItemFormDto;
+import hr.algebra.tabletopshop.dto.UpdateItemFormDto;
 import hr.algebra.tabletopshop.model.items.Item;
 import hr.algebra.tabletopshop.publisher.CustomSpringEventPublisher;
 import hr.algebra.tabletopshop.repository.ItemRepositoryMongo;
@@ -40,7 +41,6 @@ public class HomeController {
         ModelAndView mav = new ModelAndView();
         customSpringEventPublisher.publishCustomEvent("Home page opened!");
         mav.addObject("items", itemRepositoryMongo.findAll());
-        mav.addObject("item", new CreateItemFormDto());
         mav.addObject("cartItemDto", new CartItemDto());
         mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
         mav.setViewName("homePage");
@@ -84,6 +84,18 @@ public class HomeController {
         return mav;
     }
     
+    @GetMapping("/admin/adminPage")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView getStoreAdminPage() {
+        ModelAndView mav = new ModelAndView();
+        customSpringEventPublisher.publishCustomEvent("Admin page opened!");
+        mav.addObject("items", itemRepositoryMongo.findAll());
+        mav.addObject("createItemDto", new CreateItemFormDto());
+        mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
+        mav.setViewName("adminPage");
+        return mav;
+    }
+    
     @PostMapping("/admin/newItem")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ModelAndView saveNewItem(@ModelAttribute @Valid CreateItemFormDto formItemDto, BindingResult bindingResult) {
@@ -96,7 +108,7 @@ public class HomeController {
         }
         
         if (bindingResult.hasErrors()) {
-            mav.addObject("item", formItemDto);
+            mav.addObject("createItemDto", formItemDto);
             mav.setViewName("adminPage");
             return mav;
         }
@@ -115,23 +127,40 @@ public class HomeController {
         return mav;
     }
     
+    @PostMapping("/admin/updatePage")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView getUpdatePage(@RequestParam String id) {
+        ModelAndView mav = new ModelAndView();
+        Item itemToUpdate = itemService.getItemById(id);
+        mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
+        mav.addObject("updateItemDto", new UpdateItemFormDto(itemToUpdate.getId(), itemToUpdate.getName(), itemToUpdate.getCategory(), itemToUpdate.getDescription(), itemToUpdate.getQuantity(), itemToUpdate.getPrice()));
+        mav.setViewName("updateItemPage");
+        return mav;
+    }
+    
+    @PostMapping("/admin/updateItem")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView updateItem(@ModelAttribute @Valid UpdateItemFormDto updateItemFormDto, BindingResult bindingResult) {
+        ModelAndView mav = new ModelAndView();
+        
+        if (bindingResult.hasErrors()) {
+            mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
+            mav.addObject("updateItemDto", updateItemFormDto);
+            mav.setViewName("updateItemPage");
+            return mav;
+        }
+        
+        itemService.updateItem(updateItemFormDto);
+        mav.setViewName("redirect:/store/admin/adminPage");
+        return mav;
+    }
+    
     @GetMapping("/cleanSession")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String cleanSession(SessionStatus sessionStatus, HttpSession session) {
         session.invalidate();
         sessionStatus.setComplete();
         return "redirect:/store/admin/adminPage";
-    }
-    
-    @GetMapping("/admin/adminPage")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ModelAndView getStoreAdminPage() {
-        ModelAndView mav = new ModelAndView();
-        customSpringEventPublisher.publishCustomEvent("Admin page opened!");
-        mav.addObject("items", itemRepositoryMongo.findAll());
-        mav.addObject("item", new CreateItemFormDto());
-        mav.setViewName("adminPage");
-        return mav;
     }
     
     @ResponseBody
