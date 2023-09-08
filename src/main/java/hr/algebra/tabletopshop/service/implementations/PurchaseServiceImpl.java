@@ -23,6 +23,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -95,6 +96,7 @@ public class PurchaseServiceImpl implements PurchaseService {
                                                                           .county(purchaseFormDto.getCounty())
                                                                           .zipCode(purchaseFormDto.getZipCode())
                                                                           .paymentMethod(PaymentMethod.PAY_ON_DELIVERY)
+                                                                          .createdAt(new Date())
                                                                           .purchaseItems(new HashSet<>())
                                                                           .build());
             
@@ -130,6 +132,7 @@ public class PurchaseServiceImpl implements PurchaseService {
                     .address2(purchaseFormDto.getAddress2())
                     .paymentMethod(PaymentMethod.PAYPAL)
                     .county(purchaseFormDto.getCounty())
+                    .createdAt(new Date())
                     .zipCode(purchaseFormDto.getZipCode()).build();
             purchaseRepositoryMongo.save(newPurchase);
             

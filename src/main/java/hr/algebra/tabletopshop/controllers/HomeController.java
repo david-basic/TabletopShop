@@ -4,11 +4,10 @@ import hr.algebra.tabletopshop.dto.CartItemDto;
 import hr.algebra.tabletopshop.dto.CreateItemFormDto;
 import hr.algebra.tabletopshop.dto.UpdateItemFormDto;
 import hr.algebra.tabletopshop.model.items.Item;
+import hr.algebra.tabletopshop.model.purchase.Purchase;
 import hr.algebra.tabletopshop.publisher.CustomSpringEventPublisher;
 import hr.algebra.tabletopshop.repository.ItemRepositoryMongo;
-import hr.algebra.tabletopshop.service.CartService;
-import hr.algebra.tabletopshop.service.ItemService;
-import hr.algebra.tabletopshop.service.ItemValidationService;
+import hr.algebra.tabletopshop.service.*;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -32,6 +31,8 @@ public class HomeController {
     private ItemRepositoryMongo itemRepositoryMongo;
     private CustomSpringEventPublisher customSpringEventPublisher;
     private ItemValidationService itemValidationService;
+    private PurchaseService purchaseService;
+    private CurrentUserService currentUserService;
     private ItemService itemService;
     private CartService cartService;
     private List<Item> itemsToDisplay;
@@ -81,6 +82,27 @@ public class HomeController {
         }
         
         mav.setViewName("redirect:/store/browse");
+        return mav;
+    }
+    
+    @GetMapping("/purchaseHistory")
+    public ModelAndView getPurchaseHistoryPage() {
+        ModelAndView mav = new ModelAndView();
+        customSpringEventPublisher.publishCustomEvent("Authenticated user opened their purchase history!");
+        mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
+        mav.addObject("purchases", purchaseService.getAllPurchasesByUser(currentUserService.getCurrentUser()));
+        mav.setViewName("purchaseHistoryPage");
+        return mav;
+    }
+    
+    @PostMapping("/purchaseDetails")
+    public ModelAndView purchaseDetails(@RequestParam String id) {
+        ModelAndView mav = new ModelAndView();
+        Purchase purchaseById = purchaseService.getPurchaseById(id);
+        mav.addObject("purchaseDetails", purchaseById.getPurchaseItems());
+        mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
+        mav.setViewName("purchaseDetailsPage");
+        
         return mav;
     }
     

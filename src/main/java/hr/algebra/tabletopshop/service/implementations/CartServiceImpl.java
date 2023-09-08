@@ -64,6 +64,7 @@ public class CartServiceImpl implements CartService {
         Cart cart = getCurrentUserCart();
         cartItemRepositoryMongo.deleteAll(cart.getCartItems());
         cart.setTotalPrice(0.0);
+        cart.setCartItems(new HashSet<>());
         cartRepositoryMongo.save(cart);
     }
     

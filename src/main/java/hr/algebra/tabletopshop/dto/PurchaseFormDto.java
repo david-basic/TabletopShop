@@ -33,7 +33,7 @@ public class PurchaseFormDto {
     private String address2;
     
     @NotNull(message = "County name must be input!")
-    @Size(min = 7, max = 23, message = "County name must be between 7 and 23 characters long")
+    @Size(min = 7, max = 33, message = "County name must be between 7 and 33 characters long")
     private String county;
     
     @NotNull(message = "City name must be input!")

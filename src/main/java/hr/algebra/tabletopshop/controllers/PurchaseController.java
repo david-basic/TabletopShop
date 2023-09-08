@@ -2,6 +2,7 @@ package hr.algebra.tabletopshop.controllers;
 
 import hr.algebra.tabletopshop.dto.CreatePurchaseDto;
 import hr.algebra.tabletopshop.dto.PurchaseFormDto;
+import hr.algebra.tabletopshop.model.cart.Cart;
 import hr.algebra.tabletopshop.model.purchase.PaymentMethod;
 import hr.algebra.tabletopshop.service.CartService;
 import hr.algebra.tabletopshop.service.PurchaseService;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class PurchaseController {
     private final PurchaseService purchaseService;
     private final CartService cartService;
+    private final Cart cart;
 
     
     @Value("${paypal.client-id}")
@@ -74,7 +76,6 @@ public class PurchaseController {
         ModelAndView mav = new ModelAndView();
         purchaseService.cancelOrder(token);
         mav.setViewName("redirect:/purchase/get");
-        
         return mav;
     }
 }

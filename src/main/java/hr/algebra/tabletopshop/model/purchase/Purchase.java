@@ -2,11 +2,13 @@ package hr.algebra.tabletopshop.model.purchase;
 
 import hr.algebra.tabletopshop.model.users.User;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Set;
 
 @Getter
@@ -47,12 +49,15 @@ public class Purchase implements Serializable {
     
     private Double purchaseTotal;
     
+    @CreatedDate
+    private Date createdAt;
+    
     @DBRef
     @ToString.Exclude
     private Set<PurchaseItem> purchaseItems;
     
     @Builder
-    public Purchase(Integer purchaseId, User user, String paypalId, String firstName, String lastName, String email, String address1, String address2, String county, String city, Integer zipCode, PaymentMethod paymentMethod, Double purchaseTotal, Set<PurchaseItem> purchaseItems) {
+    public Purchase(Integer purchaseId, User user, String paypalId, String firstName, String lastName, String email, String address1, String address2, String county, String city, Integer zipCode, PaymentMethod paymentMethod, Double purchaseTotal, Date createdAt, Set<PurchaseItem> purchaseItems) {
         this.purchaseId = purchaseId;
         this.user = user;
         this.paypalId = paypalId;
@@ -66,6 +71,7 @@ public class Purchase implements Serializable {
         this.zipCode = zipCode;
         this.paymentMethod = paymentMethod;
         this.purchaseTotal = purchaseTotal;
+        this.createdAt = createdAt;
         this.purchaseItems = purchaseItems;
     }
 }
