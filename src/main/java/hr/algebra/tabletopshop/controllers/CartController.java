@@ -38,6 +38,7 @@ public class CartController {
     @GetMapping("/get")
     public ModelAndView getCart(Authentication authentication) {
         ModelAndView mav = new ModelAndView();
+        customSpringEventPublisher.publishCustomEvent("Cart page opened!");
         mav.addObject("cart", Objects.nonNull(authentication) ? cartService.getCurrentUserCart() : cart);
         mav.addObject("cartItemCount", Objects.nonNull(authentication) ? cartService.getCurrentUserCart().getCartItems().size() : cart.getCartItems().size());
         mav.setViewName("cartPage");
@@ -49,13 +50,9 @@ public class CartController {
     public ModelAndView addItemToCartAuth(@ModelAttribute @Valid CartItemDto cartItemDto) {
         ModelAndView mav = new ModelAndView();
         Item item = itemService.getItemById(cartItemDto.getId());
-        
         cartService.addItemToCart(item, cartItemDto.getQuantity());
-        
         customSpringEventPublisher.publishCustomEvent("Item added to cart by a user!");
-        
         mav.setViewName("redirect:/store/homePage");
-        
         return mav;
     }
     
@@ -67,18 +64,14 @@ public class CartController {
         Set<CartItem> cartItems = cart.getCartItems();
         if (cartItems.size() == 0) {
             cart.addItem(CartItem.builder().cartItemId(1).item(item).quantity(cartItemDto.getQuantity()).build());
-            
         } else {
             cart.getCartItems().stream().filter(it -> it.getItem().equals(item)).findFirst().ifPresentOrElse(i -> {
                 i.addQuantity(cartItemDto.getQuantity());
                 cart.addToTotal(item.getPrice() * cartItemDto.getQuantity());
             }, () -> cart.addItem(CartItem.builder().cartItemId(cart.getCartItems().size() + 1).item(item).quantity(cartItemDto.getQuantity()).build()));
         }
-        
         customSpringEventPublisher.publishCustomEvent("Item added to cart by a anonymous!");
-        
         mav.setViewName("redirect:/public/home");
-        
         return mav;
     }
     
@@ -86,7 +79,7 @@ public class CartController {
     @ResponseBody
     public ResponseEntity<ChangeItemQuantityDto> incrementItemQuantity(Authentication authentication, String item_id) {
         Item item = itemService.getItemById(item_id);
-        
+        customSpringEventPublisher.publishCustomEvent("Item in cart incremented!");
         if (Objects.nonNull(authentication)) {
             return ResponseEntity.ok(cartService.incrementItemInCart(item));
         } else {
@@ -102,7 +95,7 @@ public class CartController {
     @ResponseBody
     public ResponseEntity<ChangeItemQuantityDto> decrementItemQuantity(Authentication authentication, String item_id) {
         Item item = itemService.getItemById(item_id);
-        
+        customSpringEventPublisher.publishCustomEvent("Item in cart decremented!");
         if (Objects.nonNull(authentication)) {
             return ResponseEntity.ok(cartService.decrementItemInCart(item));
         } else {
@@ -123,7 +116,7 @@ public class CartController {
     @ResponseBody
     public ResponseEntity<RemoveItemFromCartDto> removeItem(Authentication authentication, String item_id) {
         Item item = itemService.getItemById(item_id);
-        
+        customSpringEventPublisher.publishCustomEvent("Item in cart removed!");
         if (Objects.nonNull(authentication)) {
             return ResponseEntity.ok(cartService.removeItemFromCart(item));
         } else {
@@ -138,9 +131,8 @@ public class CartController {
     @ResponseBody
     public ResponseEntity<?> deleteCartOnLogout() {
         User currentUser = currentUserService.getCurrentUser();
-        
+        customSpringEventPublisher.publishCustomEvent("Cart deleted on logout!");
         cartService.deleteCartByUser(currentUser);
-        
         return ResponseEntity.ok().body("Cart successfully deleted");
     }
 }
