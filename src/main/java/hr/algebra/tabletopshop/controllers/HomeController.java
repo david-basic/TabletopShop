@@ -61,19 +61,15 @@ public class HomeController {
     public ModelAndView getBrowsePage() {
         ModelAndView mav = new ModelAndView();
         customSpringEventPublisher.publishCustomEvent("Authenticated user entered browse page!");
-        
         mav.addObject("cartItemDto", new CartItemDto());
         mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
         mav.addObject("categories", categoryService.getAllCategories());
-        
-        //ako user dodje direktno na browse stranicu ili ako nije nađen niti jedan item sa traženom kategorijom
         if (itemsToDisplay.isEmpty()) {
             mav.addObject("items", itemRepositoryMongo.findAll());
             mav.addObject("itemsToDisplay", itemRepositoryMongo.findAll());
         } else {
             mav.addObject("itemsToDisplay", itemsToDisplay);
         }
-        
         mav.setViewName("browse");
         return mav;
     }
@@ -84,13 +80,11 @@ public class HomeController {
         customSpringEventPublisher.publishCustomEvent("Authenticated user browsed by category!");
         
         itemsToDisplay = new ArrayList<>();
-        
         if (Objects.equals(categoryChosen, "all")) {
             itemsToDisplay.addAll(itemRepositoryMongo.findAll());
         } else {
             itemsToDisplay.addAll(itemRepositoryMongo.findAllByCategory(categoryService.getCategoryById(categoryChosen)));
         }
-        
         mav.setViewName("redirect:/store/browse");
         return mav;
     }
@@ -108,11 +102,11 @@ public class HomeController {
     @PostMapping("/purchaseDetails")
     public ModelAndView purchaseDetails(@RequestParam String id) {
         ModelAndView mav = new ModelAndView();
+        customSpringEventPublisher.publishCustomEvent("Authenticated user opened purchase details!");
         Purchase purchaseById = purchaseService.getPurchaseById(id);
         mav.addObject("purchaseDetails", purchaseById.getPurchaseItems());
         mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
         mav.setViewName("purchaseDetailsPage");
-        
         return mav;
     }
     
@@ -151,8 +145,9 @@ public class HomeController {
             ObjectError error = new ObjectError("globalError", duplicateError);
             bindingResult.addError(error);
         }
-        
+        customSpringEventPublisher.publishCustomEvent("New category creation attempt...");
         if (bindingResult.hasErrors()) {
+            customSpringEventPublisher.publishCustomEvent("New category creation fail. Errors occurred!");
             mav.addObject("items", itemRepositoryMongo.findAll());
             mav.addObject("createCategoryDto", formCategoryDto);
             mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
@@ -160,8 +155,8 @@ public class HomeController {
             mav.setViewName("adminPage");
             return mav;
         }
-        
         categoryService.createCategory(formCategoryDto);
+        customSpringEventPublisher.publishCustomEvent("Category creation success!");
         mav.setViewName("redirect:/store/admin/manageCategories");
         return mav;
     }
@@ -170,7 +165,9 @@ public class HomeController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ModelAndView deleteCategory(@RequestParam String id) {
         ModelAndView mav = new ModelAndView();
+        customSpringEventPublisher.publishCustomEvent("Category deletion attempt...");
         categoryService.deleteCategory(id);
+        customSpringEventPublisher.publishCustomEvent("Category deletion success!");
         mav.setViewName("redirect:/store/admin/manageCategories");
         return mav;
     }
@@ -179,6 +176,7 @@ public class HomeController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ModelAndView getCategoryUpdatePage(@RequestParam String id) {
         ModelAndView mav = new ModelAndView();
+        customSpringEventPublisher.publishCustomEvent("Category update page opened by admin!");
         Category categoryToUpdate = categoryService.getCategoryById(id);
         mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
         mav.addObject("updateCategoryDto", new UpdateCategoryFormDto(categoryToUpdate.getId(), categoryToUpdate.getName()));
@@ -190,15 +188,16 @@ public class HomeController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ModelAndView updateCategory(@ModelAttribute @Valid UpdateCategoryFormDto updateCategoryFormDto, BindingResult bindingResult) {
         ModelAndView mav = new ModelAndView();
-        
+        customSpringEventPublisher.publishCustomEvent("Category update attempt...");
         if (bindingResult.hasErrors()) {
+            customSpringEventPublisher.publishCustomEvent("Category update fail. Errors occurred!");
             mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
             mav.addObject("updateCategoryDto", updateCategoryFormDto);
             mav.setViewName("updateCategoryPage");
             return mav;
         }
-        
         categoryService.updateCategory(updateCategoryFormDto);
+        customSpringEventPublisher.publishCustomEvent("Category update success!");
         mav.setViewName("redirect:/store/admin/manageCategories");
         return mav;
     }
@@ -208,13 +207,13 @@ public class HomeController {
     public ModelAndView saveNewItem(@ModelAttribute @Valid CreateItemFormDto formItemDto, BindingResult bindingResult) {
         ModelAndView mav = new ModelAndView();
         String duplicateError = itemValidationService.validateDuplicateItem(formItemDto, itemRepositoryMongo.findAll());
-        
         if (!duplicateError.isEmpty()) {
             ObjectError error = new ObjectError("globalError", duplicateError);
             bindingResult.addError(error);
         }
-        
+        customSpringEventPublisher.publishCustomEvent("Item creation attempt...");
         if (bindingResult.hasErrors()) {
+            customSpringEventPublisher.publishCustomEvent("Item creation fail. Errors occurred!");
             mav.addObject("items", itemRepositoryMongo.findAll());
             mav.addObject("createItemDto", formItemDto);
             mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
@@ -222,8 +221,8 @@ public class HomeController {
             mav.setViewName("adminPage");
             return mav;
         }
-        
         itemService.createItem(formItemDto);
+        customSpringEventPublisher.publishCustomEvent("Item creation success!");
         mav.setViewName("redirect:/store/admin/adminPage");
         return mav;
     }
@@ -232,7 +231,9 @@ public class HomeController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ModelAndView deleteItem(@RequestParam String id) {
         ModelAndView mav = new ModelAndView();
+        customSpringEventPublisher.publishCustomEvent("Item deletion attempt...");
         itemService.deleteItem(id);
+        customSpringEventPublisher.publishCustomEvent("Item deletion success!");
         mav.setViewName("redirect:/store/admin/adminPage");
         return mav;
     }
@@ -241,6 +242,7 @@ public class HomeController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ModelAndView getUpdatePage(@RequestParam String id) {
         ModelAndView mav = new ModelAndView();
+        customSpringEventPublisher.publishCustomEvent("Item update page opened by admin!");
         Item itemToUpdate = itemService.getItemById(id);
         mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
         mav.addObject("categories", categoryService.getAllCategories());
@@ -253,16 +255,17 @@ public class HomeController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ModelAndView updateItem(@ModelAttribute @Valid UpdateItemFormDto updateItemFormDto, BindingResult bindingResult) {
         ModelAndView mav = new ModelAndView();
-        
+        customSpringEventPublisher.publishCustomEvent("Item update attempt...");
         if (bindingResult.hasErrors()) {
+            customSpringEventPublisher.publishCustomEvent("Item update fail. Errors occurred!");
             mav.addObject("categories", categoryService.getAllCategories());
             mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
             mav.addObject("updateItemDto", updateItemFormDto);
             mav.setViewName("updateItemPage");
             return mav;
         }
-        
         itemService.updateItem(updateItemFormDto);
+        customSpringEventPublisher.publishCustomEvent("Item update success!");
         mav.setViewName("redirect:/store/admin/adminPage");
         return mav;
     }
@@ -275,13 +278,11 @@ public class HomeController {
         mav.addObject("allUsers", userRepositoryMongo.findAll());
         mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
         mav.addObject("dateRangeDto", new DateRangeDto());
-        
         if (purchasesToDisplay.isEmpty()) {
             mav.addObject("purchasesToDisplay", purchaseService.getAllPurchases());
         } else {
             mav.addObject("purchasesToDisplay", purchasesToDisplay);
         }
-        
         mav.setViewName("adminHistory");
         return mav;
     }
@@ -291,21 +292,20 @@ public class HomeController {
     public ModelAndView findPurchaseInDateRange(@ModelAttribute("dateRangeDto") DateRangeDto dateRangeDto, BindingResult bindingResult) {
         ModelAndView mav = new ModelAndView();
         customSpringEventPublisher.publishCustomEvent("Admin browsed purchases by date range!");
-        
+        customSpringEventPublisher.publishCustomEvent("Browse purchases by date attempt...");
         if (bindingResult.hasErrors()) {
+            customSpringEventPublisher.publishCustomEvent("Browse by date fail. Errors occurred!");
             mav.addObject("allUsers", userRepositoryMongo.findAll());
             mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
             mav.addObject("dateRangeDto", dateRangeDto);
             mav.setViewName("adminHistory");
             return mav;
         }
-        
         Date startDate = dateRangeDto.getStartDate();
         Date endDate = dateRangeDto.getEndDate();
-        
         purchasesToDisplay = new ArrayList<>();
         purchasesToDisplay.addAll(purchaseService.getAllPurchasesBetweenDates(startDate, endDate));
-        
+        customSpringEventPublisher.publishCustomEvent("Browse purchases by date success!");
         mav.setViewName("redirect:/store/admin/storeHistory");
         return mav;
     }
@@ -315,15 +315,12 @@ public class HomeController {
     public ModelAndView findPurchasesForUser(@RequestParam("selectedUser") Integer userChosen) {
         ModelAndView mav = new ModelAndView();
         customSpringEventPublisher.publishCustomEvent("Admin browsed purchases by user!");
-        
         purchasesToDisplay = new ArrayList<>();
-        
         if (Objects.equals(userChosen, 0)) {
             purchasesToDisplay.addAll(purchaseService.getAllPurchases());
         } else {
             purchasesToDisplay.addAll(purchaseService.getAllPurchasesByUser(userRepositoryMongo.findById(userChosen).orElse(currentUserService.getCurrentUser())));
         }
-        
         mav.setViewName("redirect:/store/admin/storeHistory");
         return mav;
     }
@@ -331,6 +328,7 @@ public class HomeController {
     @GetMapping("/cleanSession")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String cleanSession(SessionStatus sessionStatus, HttpSession session) {
+        customSpringEventPublisher.publishCustomEvent("Admin cleaned session!");
         session.invalidate();
         sessionStatus.setComplete();
         return "redirect:/store/admin/adminPage";
