@@ -42,7 +42,7 @@
                 <tr th:each="cartItem : ${cart.getCartItems()}">
                     <th scope="row" th:text="${cartItem.cartItemId}"></th>
                     <td th:text="${cartItem.item.name}"></td>
-                    <td th:text="${cartItem.item.category}"></td>
+                    <td th:text="${cartItem.item.category.name}"></td>
                     <td th:id="'quantity' + ${cartItem.item.id}" th:text="${cartItem.quantity}"
                         th:value="${cartItem.quantity}"></td>
                     <td th:text="${cartItem.getItemPrice()} + '€'"></td>

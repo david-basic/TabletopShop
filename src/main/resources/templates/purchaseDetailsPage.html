@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Purchase details page</title>
@@ -32,7 +31,7 @@
                         <tr th:each="purchItm : ${purchaseDetails}">
                             <th scope="row" th:text="${purchItm.purchaseItemId}"></th>
                             <td th:text="${purchItm.item.name}"></td>
-                            <td th:text="${purchItm.item.category}"></td>
+                            <td th:text="${purchItm.item.category.name}"></td>
                             <td th:text="${purchItm.quantity}"></td>
                             <td th:text="${purchItm.item.price} + '€'"></td>
                             <td th:text="${purchItm.getPurchaseItemTotal()} + '€'"></td>
