@@ -29,9 +29,9 @@
                         </div>
                         <div class="col-md-6">
                             <label for="categoryInput" class="form-label">Category</label>
-                            <select id="categoryInput" class="form-select" th:field="*{category}">
-                                <option th:each="category : ${T(hr.algebra.tabletopshop.model.items.Category).values()}"
-                                        th:value="${category}" th:text="${category}" >
+                            <select id="categoryInput" class="form-select" th:field="*{idCategory}">
+                                <option th:each="category : ${categories}"
+                                        th:value="${category.id}" th:text="${category.name}" >
                                 </option>
                             </select>
                         </div>

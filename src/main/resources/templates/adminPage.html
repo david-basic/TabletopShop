@@ -26,22 +26,28 @@
                 </div>
 
                 <div class="row container">
-                    <button type="button" href="#" class="btn btn-dark"><span>Manage categories</span></button>
+                    <div class="col-12 justify-content-center">
+                        <form th:action="@{/store/admin/manageCategories}" method="get">
+                            <button type="submit" class="btn btn-dark">Manage categories</button>
+                        </form>
+                    </div>
                     <ul>
                         <li th:each="err : ${#fields.errors('createItemDto.*')}" th:text="${err}" class="text-danger"/>
                     </ul>
                     <hr>
-                    <form th:action="@{/store/admin/newItem}" th:object="${createItemDto}" method="post" class="row g-3">
+                    <form th:action="@{/store/admin/newItem}" th:object="${createItemDto}" method="post"
+                          class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label" for="nameInput">Name</label>
-                            <input class="form-control" id="nameInput" type="text" th:field="*{name}" name="createItemDto.name"
+                            <input class="form-control" id="nameInput" type="text" th:field="*{name}"
+                                   name="createItemDto.name"
                                    required/>
                         </div>
                         <div class="col-md-6">
                             <label for="categoryInput" class="form-label">Category</label>
-                            <select id="categoryInput" class="form-select" th:field="*{category}">
-                                <option th:each="category : ${T(hr.algebra.tabletopshop.model.items.Category).values()}"
-                                        th:value="${category}" th:text="${category.getDisplayName()}">
+                            <select id="categoryInput" class="form-select" th:field="*{idCategory}">
+                                <option th:each="category : ${categories}"
+                                        th:value="${category.id}" th:text="${category.name}">
                                 </option>
                             </select>
                         </div>
@@ -88,7 +94,7 @@
                         <tr th:each="item : ${items}">
                             <th scope="row" th:text="${item.itemId}"></th>
                             <td th:text="${item.name}"></td>
-                            <td th:text="${item.category}"></td>
+                            <td th:text="${item.category.name}"></td>
                             <td th:text="${item.description}"></td>
                             <td th:text="${item.quantity}"></td>
                             <td th:text="${item.price} + '€'"></td>
