@@ -101,6 +101,7 @@ public class PurchaseServiceImpl implements PurchaseService {
                                                                           .build());
             
             List<PurchaseItem> savedPurchaseItems = purchaseItemRepositoryMongo.saveAll(currentUserCart.getCartItems().stream().map(item -> PurchaseItem.builder()
+                    .purchaseItemId(calculateNextPurchaseItemIdInSequence())
                     .purchase(savedPurchase)
                     .item(item.getItem())
                     .quantity(item.getQuantity())
