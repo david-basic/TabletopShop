@@ -5,8 +5,8 @@ import hr.algebra.tabletopshop.model.cart.Cart;
 import hr.algebra.tabletopshop.model.items.Item;
 import hr.algebra.tabletopshop.publisher.CustomSpringEventPublisher;
 import hr.algebra.tabletopshop.repository.ItemRepositoryMongo;
+import hr.algebra.tabletopshop.service.CategoryService;
 import lombok.AllArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +23,7 @@ import java.util.Objects;
 public class PublicHomeController {
     private ItemRepositoryMongo itemRepositoryMongo;
     private CustomSpringEventPublisher customSpringEventPublisher;
+    private CategoryService categoryService;
     private final Cart cart;
     private List<Item> itemsToDisplay;
     
@@ -51,6 +52,7 @@ public class PublicHomeController {
             
             mav.addObject("cartItemDto", new CartItemDto());
             mav.addObject("cartItemCount", cart.getCartItems().size());
+            mav.addObject("categories", categoryService.getAllCategories());
             
             //ako user dodje direktno na browse stranicu ili ako nije nađen niti jedan item sa traženom kategorijom
             if (itemsToDisplay.isEmpty()) {
@@ -77,7 +79,7 @@ public class PublicHomeController {
         if (Objects.equals(categoryChosen, "all")) {
             itemsToDisplay.addAll(itemRepositoryMongo.findAll());
         } else {
-            itemsToDisplay.addAll(itemRepositoryMongo.findAllByCategory(categoryChosen));
+            itemsToDisplay.addAll(itemRepositoryMongo.findAllByCategory(categoryService.getCategoryById(categoryChosen)));
         }
         
         mav.setViewName("redirect:/public/browse");
