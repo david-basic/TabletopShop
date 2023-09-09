@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Purchase history page</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}"/>
+</head>
+<body style="height: 100vh;" class="d-flex text-center">
+<div class="d-flex w-100 h-100 mx-auto flex-column">
+    <div class="mb-auto" th:insert="~{/fragments/header :: header}"></div>
+
+    <div class="container">
+        <main class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="row">
+                        <h2 th:inline="text">Hello <span th:remove="tag" sec:authentication="name">thymeleaf</span>!
+                        </h2>
+                        <h4>This is your Purchase history. Feel free to browse it.</h4>
+                    </div>
+                    <br>
+                </div>
+
+                <div class="row">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Buyer</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Payment method</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody class="table-group-divider align-text-bottom">
+                        <tr th:if="${purchases.isEmpty()}">
+                            <td colspan="7"> No Items Available</td>
+                        </tr>
+                        <tr th:each="purch : ${purchases}">
+                            <th scope="row" th:text="${purch.purchaseId}"></th>
+                            <td th:text="${purch.firstName} + ' ' + ${purch.lastName}"></td>
+                            <td th:text="${purch.createdAt}"></td>
+                            <td th:text="${purch.paymentMethod.getDisplayName()}"></td>
+                            <td th:text="${purch.purchaseTotal} + '€'"></td>
+                            <td>
+                                <form class="d-inline" th:action="@{/store/purchaseDetails}" method="post">
+                                    <input type="hidden" name="id" th:value="${purch.id}">
+                                    <button type="submit" class="btn btn-sm btn-outline-success">DETAILS</button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="mt-auto" th:insert="~{/fragments/footer :: footer}"></div>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
+</body>
+</html>

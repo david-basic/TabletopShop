@@ -177,6 +177,14 @@ public class HomeController {
         return mav;
     }
     
+    @GetMapping("/admin/storeHistory")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView getStoreHistoryPage() {
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("adminHistory");
+        return mav;
+    }
+    
     @GetMapping("/cleanSession")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String cleanSession(SessionStatus sessionStatus, HttpSession session) {
