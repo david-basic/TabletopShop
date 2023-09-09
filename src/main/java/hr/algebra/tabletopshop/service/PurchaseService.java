@@ -5,6 +5,7 @@ import hr.algebra.tabletopshop.dto.PurchaseFormDto;
 import hr.algebra.tabletopshop.model.purchase.Purchase;
 import hr.algebra.tabletopshop.model.users.User;
 
+import java.util.Date;
 import java.util.List;
 
 public interface PurchaseService {
@@ -19,5 +20,7 @@ public interface PurchaseService {
     void cancelOrder(String token);
     
     CreatePurchaseDto createPurchase(PurchaseFormDto purchaseFormDto);
+    
+    List<Purchase> getAllPurchasesBetweenDates(Date startDate, Date endDate);
     
 }

@@ -36,7 +36,7 @@
                         </thead>
                         <tbody class="table-group-divider align-text-bottom">
                         <tr th:if="${purchases.isEmpty()}">
-                            <td colspan="6"> No Items Available</td>
+                            <td colspan="6"> No purchases Available</td>
                         </tr>
                         <tr th:each="purch : ${purchases}">
                             <th scope="row" th:text="${purch.purchaseId}"></th>

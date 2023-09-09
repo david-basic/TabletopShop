@@ -166,6 +166,11 @@ public class PurchaseServiceImpl implements PurchaseService {
         }
     }
     
+    @Override
+    public List<Purchase> getAllPurchasesBetweenDates(Date startDate, Date endDate) {
+        return purchaseRepositoryMongo.findAllByCreatedAtBetween(startDate, endDate);
+    }
+    
     private Integer calculateNextPurchaseIdInSequence() {
         Query query = new Query().with(Sort.by(Sort.Order.desc("purchaseId"))).limit(1);
         Purchase lastPurchase = mongoTemplate.findOne(query, Purchase.class);

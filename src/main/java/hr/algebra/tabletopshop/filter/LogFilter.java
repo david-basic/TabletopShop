@@ -11,7 +11,6 @@ import java.io.IOException;
 @Component
 @Order(3)
 public class LogFilter implements Filter {
-    
     private Logger logger = LoggerFactory.getLogger(LogFilter.class);
     
     @Override
@@ -19,5 +18,4 @@ public class LogFilter implements Filter {
         logger.info("Hello from: " + request.getLocalAddr());
         chain.doFilter(request, response);
     }
-    
 }

@@ -18,7 +18,7 @@
             <div class="items-container">
                 <div th:if="${items.isEmpty()}">
                     <div class="card" aria-hidden="true" style="width: 18rem;">
-                        <img src="/static/images/no-image.png" th:src="@{images/no-image.png}" class="card-img-top"
+                        <img src="" th:src="@{/images/no-image.png}" class="card-img-top"
                              alt="no items image">
                         <div class="card-body">
                             <h5 class="card-title placeholder-glow">
@@ -44,7 +44,7 @@
                                  alt="no items image">
                             <div class="card-body">
                                 <h5 class="card-title" th:text="${itm.name}"></h5>
-                                <h6 class="card-subtitle" th:text="${itm.category}"></h6>
+                                <h6 class="card-subtitle" th:text="${itm.category.name}"></h6>
                                 <p class="card-text" th:text="${itm.description}"></p>
                                 <h5 class="card-footer" th:text="${itm.price} + '€'"></h5>
                                 <input type="hidden" name="item" th:value="${itm}">
@@ -106,7 +106,7 @@
                                      alt="no items image">
                                 <div class="card-body">
                                     <h5 class="card-title" th:text="${itm.name}"></h5>
-                                    <h6 class="card-subtitle" th:text="${itm.category}"></h6>
+                                    <h6 class="card-subtitle" th:text="${itm.category.name}"></h6>
                                     <p class="card-text" th:text="${itm.description}"></p>
                                     <h5 class="card-footer" th:text="${itm.price} + '€'"></h5>
                                     <input type="hidden" name="pbItem" th:value="${itm}">

@@ -5,6 +5,7 @@ import hr.algebra.tabletopshop.dto.UpdateItemFormDto;
 import hr.algebra.tabletopshop.exceptions.DbEntityNotFoundException;
 import hr.algebra.tabletopshop.model.items.Item;
 import hr.algebra.tabletopshop.repository.ItemRepositoryMongo;
+import hr.algebra.tabletopshop.service.CategoryService;
 import hr.algebra.tabletopshop.service.ItemService;
 import hr.algebra.tabletopshop.service.UtilitiesService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepositoryMongo itemRepositoryMongo;
     private final MongoTemplate mongoTemplate;
     private final UtilitiesService utilitiesService;
+    private final CategoryService categoryService;
     
     @Override
     public void deleteItem(String id) {
@@ -44,14 +46,14 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public void createItem(CreateItemFormDto formItemDtoToItem) {
         Integer newItemId = utilitiesService.calculateNextItemIdInSequence();
-        itemRepositoryMongo.save(new Item(newItemId, formItemDtoToItem.getName(), formItemDtoToItem.getCategory(), formItemDtoToItem.getDescription(), formItemDtoToItem.getQuantity(), formItemDtoToItem.getPrice()));
+        itemRepositoryMongo.save(new Item(newItemId, formItemDtoToItem.getName(), categoryService.getCategoryById(formItemDtoToItem.getIdCategory()), formItemDtoToItem.getDescription(), formItemDtoToItem.getQuantity(), formItemDtoToItem.getPrice()));
     }
     
     @Override
     public void updateItem(UpdateItemFormDto updateItemFormDto) {
         Item itemToUpdate = itemRepositoryMongo.findById(updateItemFormDto.getId()).orElseThrow(DbEntityNotFoundException::new);
         itemToUpdate.setName(updateItemFormDto.getName());
-        itemToUpdate.setCategory(updateItemFormDto.getCategory());
+        itemToUpdate.setCategory(categoryService.getCategoryById(updateItemFormDto.getIdCategory()));
         itemToUpdate.setDescription(updateItemFormDto.getDescription());
         itemToUpdate.setQuantity(updateItemFormDto.getQuantity());
         itemToUpdate.setPrice(updateItemFormDto.getPrice());

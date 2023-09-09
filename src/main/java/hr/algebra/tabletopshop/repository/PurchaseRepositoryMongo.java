@@ -16,6 +16,8 @@ public interface PurchaseRepositoryMongo extends MongoRepository<Purchase, Strin
     
     @NotNull Optional<Purchase> findById(@NotNull String id);
     
+    List<Purchase> findAllByCreatedAtBetween(Date startDate, Date endDate);
+    
     List<Purchase> findAllByUser(User user);
     
     Optional<Purchase>findByPaypalId(String paypalId);

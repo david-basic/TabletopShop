@@ -1,6 +1,5 @@
 package hr.algebra.tabletopshop.dto;
 
-import hr.algebra.tabletopshop.model.items.Category;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -21,7 +20,7 @@ public class UpdateItemFormDto {
     private String name;
     
     @NotNull(message = "Category must be assigned!")
-    private Category category;
+    private String idCategory;
     
     @NotNull(message = "Description must exist!")
     @Size(min = 1, max = 200, message = "Description must have more than 1 and less then 200 characters!")

@@ -18,7 +18,7 @@ public class CreateItemFormDto {
     private String name;
     
     @NotNull(message = "Category must be assigned!")
-    private Category category;
+    private String idCategory;
     
     @NotNull(message = "Description must exist!")
     @Size(min = 1, max = 200, message = "Description must have more than 1 and less then 200 characters!")

@@ -3,6 +3,7 @@ package hr.algebra.tabletopshop.model.items;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
@@ -30,6 +31,7 @@ public class Item implements Serializable {
     @Size(min = 1, max = 100, message = "Name must have more than 1 and less then 100 characters!")
     private String name;
     
+    @DBRef
     @NotNull(message = "Category must be assigned!")
     private Category category;
     

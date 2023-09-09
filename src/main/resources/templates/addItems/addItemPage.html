@@ -52,7 +52,7 @@
                         <label>
                             Category:
                             <select th:field="*{category}">
-                                <option th:each="category : ${T(hr.algebra.tabletopshop.domain.items.Category).values()}"
+                                <option th:each="category : ${T(hr.algebra.tabletopshop.model.items.Category).values()}"
                                         th:value="${category}" th:text="${category}">
                                 </option>
                             </select>

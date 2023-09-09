@@ -1,12 +1,13 @@
 package hr.algebra.tabletopshop.controllers;
 
-import hr.algebra.tabletopshop.dto.CartItemDto;
-import hr.algebra.tabletopshop.dto.CreateItemFormDto;
-import hr.algebra.tabletopshop.dto.UpdateItemFormDto;
+import hr.algebra.tabletopshop.dto.*;
+import hr.algebra.tabletopshop.model.items.Category;
 import hr.algebra.tabletopshop.model.items.Item;
 import hr.algebra.tabletopshop.model.purchase.Purchase;
 import hr.algebra.tabletopshop.publisher.CustomSpringEventPublisher;
+import hr.algebra.tabletopshop.repository.CategoryRepositoryMongo;
 import hr.algebra.tabletopshop.repository.ItemRepositoryMongo;
+import hr.algebra.tabletopshop.repository.UserRepositoryMongo;
 import hr.algebra.tabletopshop.service.*;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,13 +31,20 @@ import java.util.Objects;
 @SessionAttributes("items")
 public class HomeController {
     private ItemRepositoryMongo itemRepositoryMongo;
+    private CategoryRepositoryMongo categoryRepositoryMongo;
     private CustomSpringEventPublisher customSpringEventPublisher;
+    private UserRepositoryMongo userRepositoryMongo;
+    
+    private CategoryService categoryService;
     private ItemValidationService itemValidationService;
+    private CategoryValidationService categoryValidationService;
     private PurchaseService purchaseService;
     private CurrentUserService currentUserService;
     private ItemService itemService;
     private CartService cartService;
+    
     private List<Item> itemsToDisplay;
+    private List<Purchase> purchasesToDisplay;
     
     @GetMapping("/homePage")
     public ModelAndView getStoreHomePage() {
@@ -55,6 +64,7 @@ public class HomeController {
         
         mav.addObject("cartItemDto", new CartItemDto());
         mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
+        mav.addObject("categories", categoryService.getAllCategories());
         
         //ako user dodje direktno na browse stranicu ili ako nije nađen niti jedan item sa traženom kategorijom
         if (itemsToDisplay.isEmpty()) {
@@ -78,7 +88,7 @@ public class HomeController {
         if (Objects.equals(categoryChosen, "all")) {
             itemsToDisplay.addAll(itemRepositoryMongo.findAll());
         } else {
-            itemsToDisplay.addAll(itemRepositoryMongo.findAllByCategory(categoryChosen));
+            itemsToDisplay.addAll(itemRepositoryMongo.findAllByCategory(categoryService.getCategoryById(categoryChosen)));
         }
         
         mav.setViewName("redirect:/store/browse");
@@ -114,7 +124,82 @@ public class HomeController {
         mav.addObject("items", itemRepositoryMongo.findAll());
         mav.addObject("createItemDto", new CreateItemFormDto());
         mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
+        mav.addObject("categories", categoryService.getAllCategories());
         mav.setViewName("adminPage");
+        return mav;
+    }
+    
+    @GetMapping("/admin/manageCategories")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView getManageCategoriesPage() {
+        ModelAndView mav = new ModelAndView();
+        customSpringEventPublisher.publishCustomEvent("Admin opened manage categories page!");
+        mav.addObject("categories", categoryService.getAllCategories());
+        mav.addObject("createCategoryDto", new CreateCategoryFormDto());
+        mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
+        mav.setViewName("manageCategoriesPage");
+        return mav;
+    }
+    
+    @PostMapping("/admin/newCategory")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView saveNewCategory(@ModelAttribute @Valid CreateCategoryFormDto formCategoryDto, BindingResult bindingResult) {
+        ModelAndView mav = new ModelAndView();
+        String duplicateError = categoryValidationService.validateDuplicateCategory(formCategoryDto, categoryRepositoryMongo.findAll());
+        
+        if (!duplicateError.isEmpty()) {
+            ObjectError error = new ObjectError("globalError", duplicateError);
+            bindingResult.addError(error);
+        }
+        
+        if (bindingResult.hasErrors()) {
+            mav.addObject("items", itemRepositoryMongo.findAll());
+            mav.addObject("createCategoryDto", formCategoryDto);
+            mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
+            mav.addObject("categories", categoryService.getAllCategories());
+            mav.setViewName("adminPage");
+            return mav;
+        }
+        
+        categoryService.createCategory(formCategoryDto);
+        mav.setViewName("redirect:/store/admin/manageCategories");
+        return mav;
+    }
+    
+    @PostMapping("/admin/deleteCategory")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView deleteCategory(@RequestParam String id) {
+        ModelAndView mav = new ModelAndView();
+        categoryService.deleteCategory(id);
+        mav.setViewName("redirect:/store/admin/manageCategories");
+        return mav;
+    }
+    
+    @PostMapping("/admin/categoryUpdatePage")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView getCategoryUpdatePage(@RequestParam String id) {
+        ModelAndView mav = new ModelAndView();
+        Category categoryToUpdate = categoryService.getCategoryById(id);
+        mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
+        mav.addObject("updateCategoryDto", new UpdateCategoryFormDto(categoryToUpdate.getId(), categoryToUpdate.getName()));
+        mav.setViewName("updateCategoryPage");
+        return mav;
+    }
+    
+    @PostMapping("/admin/updateCategory")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView updateCategory(@ModelAttribute @Valid UpdateCategoryFormDto updateCategoryFormDto, BindingResult bindingResult) {
+        ModelAndView mav = new ModelAndView();
+        
+        if (bindingResult.hasErrors()) {
+            mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
+            mav.addObject("updateCategoryDto", updateCategoryFormDto);
+            mav.setViewName("updateCategoryPage");
+            return mav;
+        }
+        
+        categoryService.updateCategory(updateCategoryFormDto);
+        mav.setViewName("redirect:/store/admin/manageCategories");
         return mav;
     }
     
@@ -130,7 +215,10 @@ public class HomeController {
         }
         
         if (bindingResult.hasErrors()) {
+            mav.addObject("items", itemRepositoryMongo.findAll());
             mav.addObject("createItemDto", formItemDto);
+            mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
+            mav.addObject("categories", categoryService.getAllCategories());
             mav.setViewName("adminPage");
             return mav;
         }
@@ -155,7 +243,8 @@ public class HomeController {
         ModelAndView mav = new ModelAndView();
         Item itemToUpdate = itemService.getItemById(id);
         mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
-        mav.addObject("updateItemDto", new UpdateItemFormDto(itemToUpdate.getId(), itemToUpdate.getName(), itemToUpdate.getCategory(), itemToUpdate.getDescription(), itemToUpdate.getQuantity(), itemToUpdate.getPrice()));
+        mav.addObject("categories", categoryService.getAllCategories());
+        mav.addObject("updateItemDto", new UpdateItemFormDto(itemToUpdate.getId(), itemToUpdate.getName(), itemToUpdate.getCategory().getId(), itemToUpdate.getDescription(), itemToUpdate.getQuantity(), itemToUpdate.getPrice()));
         mav.setViewName("updateItemPage");
         return mav;
     }
@@ -166,6 +255,7 @@ public class HomeController {
         ModelAndView mav = new ModelAndView();
         
         if (bindingResult.hasErrors()) {
+            mav.addObject("categories", categoryService.getAllCategories());
             mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
             mav.addObject("updateItemDto", updateItemFormDto);
             mav.setViewName("updateItemPage");
@@ -181,7 +271,60 @@ public class HomeController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ModelAndView getStoreHistoryPage() {
         ModelAndView mav = new ModelAndView();
+        customSpringEventPublisher.publishCustomEvent("Admin entered store history page!");
+        mav.addObject("allUsers", userRepositoryMongo.findAll());
+        mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
+        mav.addObject("dateRangeDto", new DateRangeDto());
+        
+        if (purchasesToDisplay.isEmpty()) {
+            mav.addObject("purchasesToDisplay", purchaseService.getAllPurchases());
+        } else {
+            mav.addObject("purchasesToDisplay", purchasesToDisplay);
+        }
+        
         mav.setViewName("adminHistory");
+        return mav;
+    }
+    
+    @PostMapping("/admin/userHistoryByDate")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView findPurchaseInDateRange(@ModelAttribute("dateRangeDto") DateRangeDto dateRangeDto, BindingResult bindingResult) {
+        ModelAndView mav = new ModelAndView();
+        customSpringEventPublisher.publishCustomEvent("Admin browsed purchases by date range!");
+        
+        if (bindingResult.hasErrors()) {
+            mav.addObject("allUsers", userRepositoryMongo.findAll());
+            mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
+            mav.addObject("dateRangeDto", dateRangeDto);
+            mav.setViewName("adminHistory");
+            return mav;
+        }
+        
+        Date startDate = dateRangeDto.getStartDate();
+        Date endDate = dateRangeDto.getEndDate();
+        
+        purchasesToDisplay = new ArrayList<>();
+        purchasesToDisplay.addAll(purchaseService.getAllPurchasesBetweenDates(startDate, endDate));
+        
+        mav.setViewName("redirect:/store/admin/storeHistory");
+        return mav;
+    }
+    
+    @PostMapping("/admin/userHistory")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView findPurchasesForUser(@RequestParam("selectedUser") Integer userChosen) {
+        ModelAndView mav = new ModelAndView();
+        customSpringEventPublisher.publishCustomEvent("Admin browsed purchases by user!");
+        
+        purchasesToDisplay = new ArrayList<>();
+        
+        if (Objects.equals(userChosen, 0)) {
+            purchasesToDisplay.addAll(purchaseService.getAllPurchases());
+        } else {
+            purchasesToDisplay.addAll(purchaseService.getAllPurchasesByUser(userRepositoryMongo.findById(userChosen).orElse(currentUserService.getCurrentUser())));
+        }
+        
+        mav.setViewName("redirect:/store/admin/storeHistory");
         return mav;
     }
     

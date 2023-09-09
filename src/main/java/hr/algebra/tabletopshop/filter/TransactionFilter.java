@@ -12,7 +12,6 @@ import java.io.IOException;
 @Component
 @Order(1)
 public class TransactionFilter implements Filter {
-    
     private Logger logger = LoggerFactory.getLogger(TransactionFilter.class);
     
     @Override

@@ -67,6 +67,7 @@ public class PurchaseController {
     public ModelAndView getSuccess() {
         ModelAndView mav = new ModelAndView();
         cartService.cleanCart();
+        mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
         mav.setViewName("purchaseSuccessPage");
         return mav;
     }
