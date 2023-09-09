@@ -1,7 +1,6 @@
 package hr.algebra.tabletopshop.dto;
 
 import hr.algebra.tabletopshop.annotations.ZipCodeLength;
-import hr.algebra.tabletopshop.model.purchase.PaymentMethod;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
