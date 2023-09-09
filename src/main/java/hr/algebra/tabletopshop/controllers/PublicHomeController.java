@@ -32,11 +32,9 @@ public class PublicHomeController {
         ModelAndView mav = new ModelAndView();
         if (!Objects.nonNull(authentication)) {
             customSpringEventPublisher.publishCustomEvent("Anonymous entered public home page!");
-            
             mav.addObject("publicItems", itemRepositoryMongo.findAll());
             mav.addObject("cartItemDto", new CartItemDto());
             mav.addObject("cartItemCount", cart.getCartItems().size());
-            
             mav.setViewName("home");
         } else {
             mav.setViewName("redirect:/store/homePage");
@@ -49,19 +47,15 @@ public class PublicHomeController {
         ModelAndView mav = new ModelAndView();
         if (!Objects.nonNull(authentication)) {
             customSpringEventPublisher.publishCustomEvent("Anonymous entered public browse page!");
-            
             mav.addObject("cartItemDto", new CartItemDto());
             mav.addObject("cartItemCount", cart.getCartItems().size());
             mav.addObject("categories", categoryService.getAllCategories());
-            
-            //ako user dodje direktno na browse stranicu ili ako nije nađen niti jedan item sa traženom kategorijom
             if (itemsToDisplay.isEmpty()) {
                 mav.addObject("publicItems", itemRepositoryMongo.findAll());
                 mav.addObject("itemsToDisplay", itemRepositoryMongo.findAll());
             } else {
                 mav.addObject("itemsToDisplay", itemsToDisplay);
             }
-            
             mav.setViewName("browse");
         } else {
             mav.setViewName("redirect:/store/browse");
@@ -73,15 +67,12 @@ public class PublicHomeController {
     public ModelAndView findItemsInCategory(@RequestParam("selectedCategory") String categoryChosen) {
         ModelAndView mav = new ModelAndView();
         customSpringEventPublisher.publishCustomEvent("Anonymous browsed by category!");
-        
         itemsToDisplay = new ArrayList<>();
-        
         if (Objects.equals(categoryChosen, "all")) {
             itemsToDisplay.addAll(itemRepositoryMongo.findAll());
         } else {
             itemsToDisplay.addAll(itemRepositoryMongo.findAllByCategory(categoryService.getCategoryById(categoryChosen)));
         }
-        
         mav.setViewName("redirect:/public/browse");
         return mav;
     }
