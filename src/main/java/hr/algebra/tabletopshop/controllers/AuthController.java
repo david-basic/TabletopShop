@@ -54,10 +54,10 @@ public class AuthController {
         return "login";
     }
     
-    
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(Model model, @ModelAttribute @Valid @RequestBody UserLoginRequest loginRequest) {
         model.addAttribute("loginRequest", loginRequest);
+        customSpringEventPublisher.publishCustomEvent("User authentication attempt...");
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         
@@ -69,12 +69,12 @@ public class AuthController {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
         
+        customSpringEventPublisher.publishCustomEvent("User authenticated!");
         return ResponseEntity.ok()
                 .body(new UserInfoResponse(userDetails.getId(),
                                            userDetails.getUsername(),
                                            roles));
     }
-    
     
     @PostMapping("/signup")
     public ModelAndView registerUser(@ModelAttribute @Valid @RequestBody UserRegisterRequest registerRequest) {
