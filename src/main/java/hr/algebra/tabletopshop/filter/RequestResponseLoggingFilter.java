@@ -23,5 +23,4 @@ public class RequestResponseLoggingFilter implements Filter {
         chain.doFilter(request, response);
         logger.info("Logging Response :{}", res.getContentType());
     }
-    // other methods
 }

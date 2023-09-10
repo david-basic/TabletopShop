@@ -21,6 +21,4 @@ public class TransactionFilter implements Filter {
         chain.doFilter(request, response);
         logger.info("Committing a transaction for req : {}", req.getRequestURI());
     }
-    
-    // other methods
 }
