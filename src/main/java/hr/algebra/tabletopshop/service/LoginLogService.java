@@ -15,4 +15,6 @@ public interface LoginLogService {
     
     List<LoginLog> getAllByUser(User user);
     
+    List<LoginLog> getAll();
+    
 }

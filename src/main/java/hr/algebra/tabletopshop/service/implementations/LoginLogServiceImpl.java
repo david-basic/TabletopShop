@@ -35,4 +35,9 @@ public class LoginLogServiceImpl implements LoginLogService {
     public List<LoginLog> getAllByUser(User user) {
         return loginLogRepositoryMongo.findAllByUser(user);
     }
+    
+    @Override
+    public List<LoginLog> getAll() {
+        return loginLogRepositoryMongo.findAll();
+    }
 }

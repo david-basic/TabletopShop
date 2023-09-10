@@ -3,6 +3,7 @@ package hr.algebra.tabletopshop.controllers;
 import hr.algebra.tabletopshop.dto.*;
 import hr.algebra.tabletopshop.model.items.Category;
 import hr.algebra.tabletopshop.model.items.Item;
+import hr.algebra.tabletopshop.model.logging.LoginLog;
 import hr.algebra.tabletopshop.model.purchase.Purchase;
 import hr.algebra.tabletopshop.publisher.CustomSpringEventPublisher;
 import hr.algebra.tabletopshop.repository.CategoryRepositoryMongo;
@@ -42,9 +43,11 @@ public class HomeController {
     private CurrentUserService currentUserService;
     private ItemService itemService;
     private CartService cartService;
+    private LoginLogService loginLogService;
     
     private List<Item> itemsToDisplay;
     private List<Purchase> purchasesToDisplay;
+    private List<LoginLog> userLoginsToDisplay;
     
     @GetMapping("/homePage")
     public ModelAndView getStoreHomePage() {
@@ -107,6 +110,61 @@ public class HomeController {
         mav.addObject("purchaseDetails", purchaseById.getPurchaseItems());
         mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
         mav.setViewName("purchaseDetailsPage");
+        return mav;
+    }
+    
+    @GetMapping("/admin/userLoginsBrowse")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView getLoginsBrowse() {
+        ModelAndView mav = new ModelAndView();
+        customSpringEventPublisher.publishCustomEvent("Admin browses user logins");
+        mav.addObject("users", userRepositoryMongo.findAll());
+        mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
+        mav.addObject("dateRangeDto", new DateRangeDto());
+        if (userLoginsToDisplay.isEmpty()) {
+            mav.addObject("userLoginsToDisplay", loginLogService.getAll());
+        } else {
+            mav.addObject("userLoginsToDisplay", userLoginsToDisplay);
+        }
+        mav.setViewName("userLoginsPage");
+        return mav;
+    }
+    
+    @PostMapping("/admin/userLoginsByDate")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView findUserLoginInDateRange(@ModelAttribute("dateRangeDto") DateRangeDto dateRangeDto, BindingResult bindingResult) {
+        ModelAndView mav = new ModelAndView();
+        customSpringEventPublisher.publishCustomEvent("Admin browsed logins by date range!");
+        customSpringEventPublisher.publishCustomEvent("Browse logins by date attempt...");
+        if (bindingResult.hasErrors()) {
+            customSpringEventPublisher.publishCustomEvent("Browse by date fail. Errors occurred!");
+            mav.addObject("allUserLogins", loginLogService.getAll());
+            mav.addObject("cartItemCount", cartService.getCurrentUserCart().getCartItems().size());
+            mav.addObject("dateRangeDto", dateRangeDto);
+            mav.setViewName("adminHistory");
+            return mav;
+        }
+        Date startDate = dateRangeDto.getStartDate();
+        Date endDate = dateRangeDto.getEndDate();
+        userLoginsToDisplay = new ArrayList<>();
+        userLoginsToDisplay.addAll(loginLogService.getAllBetweenDates(startDate, endDate));
+        customSpringEventPublisher.publishCustomEvent("Browse logins by date success!");
+        mav.setViewName("redirect:/store/admin/userLoginsBrowse");
+        return mav;
+    }
+    
+    @PostMapping("/admin/userLogins")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView findLoginsForUser(@RequestParam("selectedUser") Integer userChosen) {
+        ModelAndView mav = new ModelAndView();
+        customSpringEventPublisher.publishCustomEvent("Admin browsed logins by user!");
+        userLoginsToDisplay = new ArrayList<>();
+        if (Objects.equals(userChosen, 0)) {
+            userLoginsToDisplay.addAll(loginLogService.getAll());
+        } else {
+            userLoginsToDisplay.addAll(loginLogService.getAllByUser(userRepositoryMongo.findById(userChosen).orElse(currentUserService.getCurrentUser())));
+        }
+        mav.setViewName("redirect:/store/admin/userLoginsBrowse");
         return mav;
     }
     
