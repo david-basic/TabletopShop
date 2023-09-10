@@ -26,13 +26,16 @@ public class LoginLog implements Serializable {
     @DBRef
     private User user;
     
+    private String ipAddress;
+    
     @CreatedDate
     private Date loginAt;
     
     @Builder
-    public LoginLog(Integer logId, User user, Date loginAt) {
+    public LoginLog(Integer logId, User user, String ipAddress, Date loginAt) {
         this.logId = logId;
         this.user = user;
+        this.ipAddress = ipAddress;
         this.loginAt = loginAt;
     }
 }

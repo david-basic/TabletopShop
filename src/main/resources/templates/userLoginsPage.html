@@ -60,16 +60,18 @@
                         <tr>
                             <th scope="col">Id</th>
                             <th scope="col">Username</th>
+                            <th scope="col">IP Address</th>
                             <th scope="col">Date</th>
                         </tr>
                         </thead>
                         <tbody class="table-group-divider align-text-bottom">
                         <tr th:if="${userLoginsToDisplay.isEmpty()}">
-                            <td colspan="3">No logins Available</td>
+                            <td colspan="4">No logins Available</td>
                         </tr>
                         <tr th:each="ultd : ${userLoginsToDisplay}">
                             <th scope="row" th:text="${ultd.logId}"></th>
                             <td th:text="${ultd.user.username}"></td>
+                            <td th:text="${ultd.ipAddress}"></td>
                             <td th:text="${ultd.loginAt}"></td>
                         </tr>
                         </tbody>
