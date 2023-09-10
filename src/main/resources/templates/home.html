@@ -52,7 +52,7 @@
                                  alt="no items image">
                             <div class="card-body">
                                 <h5 class="card-title" th:text="${pbItem.name}"></h5>
-                                <h6 class="card-subtitle" th:text="${pbItem.category}"></h6>
+                                <h6 class="card-subtitle" th:text="${pbItem.category.name}"></h6>
                                 <p class="card-text" th:text="${pbItem.description}"></p>
                                 <h5 class="card-footer" th:text="${pbItem.price} + '€'"></h5>
                                 <input type="hidden" name="pbItem" th:value="${pbItem}">
@@ -113,7 +113,7 @@
                                  alt="no items image">
                             <div class="card-body">
                                 <h5 class="card-title" th:text="${pbItem.name}"></h5>
-                                <h6 class="card-subtitle" th:text="${pbItem.category}"></h6>
+                                <h6 class="card-subtitle" th:text="${pbItem.category.name}"></h6>
                                 <p class="card-text" th:text="${pbItem.description}"></p>
                                 <h5 class="card-footer" th:text="${pbItem.price} + '€'"></h5>
                                 <input type="hidden" name="pbItem" th:value="${pbItem}">

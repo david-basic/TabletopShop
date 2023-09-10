@@ -3,6 +3,7 @@ package hr.algebra.tabletopshop.service.implementations;
 import hr.algebra.tabletopshop.model.cart.Cart;
 import hr.algebra.tabletopshop.model.items.Category;
 import hr.algebra.tabletopshop.model.items.Item;
+import hr.algebra.tabletopshop.model.logging.LoginLog;
 import hr.algebra.tabletopshop.service.UtilitiesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -43,6 +44,16 @@ public class UtilitiesServiceImpl implements UtilitiesService {
         Category lastCategory = Objects.requireNonNull(mongoTemplate).findOne(query, Category.class);
         if (lastCategory != null) {
             return lastCategory.getCategoryId() + 1;
+        }
+        return 1;
+    }
+    
+    @Override
+    public Integer calculateNextLogIdInSequence() {
+        Query query = new Query().with(Sort.by(Sort.Order.desc("logId"))).limit(1);
+        LoginLog lastLoginLog = Objects.requireNonNull(mongoTemplate).findOne(query, LoginLog.class);
+        if (lastLoginLog != null) {
+            return lastLoginLog.getLogId() + 1;
         }
         return 1;
     }

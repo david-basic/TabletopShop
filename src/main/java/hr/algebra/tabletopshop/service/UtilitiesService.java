@@ -6,4 +6,6 @@ public interface UtilitiesService {
     Integer calculateNextCartIdInSequence();
     
     Integer calculateNextCategoryIdInSequence();
+    
+    Integer calculateNextLogIdInSequence();
 }
