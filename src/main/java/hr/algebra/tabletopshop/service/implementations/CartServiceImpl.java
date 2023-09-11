@@ -124,8 +124,9 @@ public class CartServiceImpl implements CartService {
         
         return cartItemRepositoryMongo.findByCartAndItem(cart, item).map(it -> {
             cart.subtractFromTotal(it.getTotal());
-            cartRepositoryMongo.save(cart);
+            cart.removeItem(it);
             cartItemRepositoryMongo.delete(it);
+            cartRepositoryMongo.save(cart);
             
             return new RemoveItemFromCartDto(cart.getTotalPrice());
         }).orElse(new RemoveItemFromCartDto(0.0));

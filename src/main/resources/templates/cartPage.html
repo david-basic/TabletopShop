@@ -21,7 +21,7 @@
             <h1>Cart</h1>
             <hr>
             <h4>This is where you'll see and manage your chosen items!</h4>
-            <span class="text-danger fw-bold">Before you are able to purchase you will have to SIGN IN</span>
+            <span sec:authorize="isAnonymous()" class="text-danger fw-bold">Before you are able to purchase you will have to SIGN IN</span>
             <hr>
             <table class="table table-hover" id="cartTable">
                 <thead>
@@ -134,6 +134,7 @@
                                             if (response.cartTotal === 0.0) {
                                                 document.getElementById('purchaseButton').remove();
                                             }
+                                            document.getElementById('lblCartCount').innerHTML = parseInt(document.getElementById('lblCartCount').innerHTML) - 1;
                                             row.remove();
                                         },
                                         error: (error) => {
@@ -157,7 +158,7 @@
             </div>
             <div class="row" th:if="${!cart.getCartItems().isEmpty()}">
                 <form th:action="@{/auth/login}" method="get" sec:authorize="isAnonymous()">
-                    <button type="submit" class="btn btn-dark">Sign in to purchase</button>
+                    <button type="submit" id="purchaseButton" class="btn btn-dark">Sign in to purchase</button>
                 </form>
                 <form th:action="@{/purchase/get}" method="get" sec:authorize="isAuthenticated()">
                     <button type="submit" id="purchaseButton" class="btn btn-dark">Purchase</button>
