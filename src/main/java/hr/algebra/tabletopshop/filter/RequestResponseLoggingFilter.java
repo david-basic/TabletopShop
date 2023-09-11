@@ -13,7 +13,6 @@ import java.io.IOException;
 @Component
 @Order(2)
 public class RequestResponseLoggingFilter implements Filter {
-    
     private Logger logger = LoggerFactory.getLogger(LogFilter.class);
     
     @Override
@@ -24,6 +23,4 @@ public class RequestResponseLoggingFilter implements Filter {
         chain.doFilter(request, response);
         logger.info("Logging Response :{}", res.getContentType());
     }
-    
-    // other methods
 }

@@ -1,11 +1,141 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
-    <meta charset="UTF-8">
-    <title>AdminPage</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Admin page</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}"/>
 </head>
-<body>
-<h1>This is an Admin page</h1>
-<a href="homePage.html">Click to go back to home.</a>
+<body style="height: 100vh;" class="d-flex text-center">
+<div class="d-flex w-100 h-100 mx-auto flex-column">
+    <div class="mb-auto" th:insert="~{/fragments/header :: header}"></div>
+
+    <div class="container">
+        <main class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="row">
+                        <h1 th:inline="text">Hello <span th:remove="tag" sec:authentication="name">thymeleaf</span>!
+                        </h1>
+                    </div>
+                    <br>
+                    <div class="row justify-content-center">
+                        <p id="message"></p>
+                    </div>
+                    <br>
+                </div>
+
+                <div class="row container">
+                    <div class="col-12 justify-content-center">
+                        <form th:action="@{/store/admin/manageCategories}" method="get">
+                            <button type="submit" class="btn btn-dark">Manage categories</button>
+                        </form>
+                    </div>
+                    <ul>
+                        <li th:each="err : ${#fields.errors('createItemDto.*')}" th:text="${err}" class="text-danger"/>
+                    </ul>
+                    <hr>
+                    <form th:action="@{/store/admin/newItem}" th:object="${createItemDto}" method="post"
+                          class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="nameInput">Name</label>
+                            <input class="form-control" id="nameInput" type="text" th:field="*{name}"
+                                   name="createItemDto.name"
+                                   required/>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="categoryInput" class="form-label">Category</label>
+                            <select id="categoryInput" class="form-select" th:field="*{idCategory}">
+                                <option th:each="category : ${categories}"
+                                        th:value="${category.id}" th:text="${category.name}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="descriptionInput" class="form-label">Description</label>
+                            <input class="form-control" id="descriptionInput" type="text" th:field="*{description}"
+                                   name="createItemDto.description" required/>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="quantityInput" class="form-label">Quantity</label>
+                            <input class="form-control" id="quantityInput" type="text" th:field="*{quantity}"
+                                   name="createItemDto.quantity" required/>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="priceInput" class="form-label">Price</label>
+                            <input class="form-control" id="priceInput" type="text" th:field="*{price}"
+                                   name="createItemDto.price" required/>
+                        </div>
+                        <div class="col-12 justify-content-center">
+                            <button type="submit" class="btn btn-dark">Add item</button>
+                        </div>
+                    </form>
+                </div>
+
+                <hr>
+
+                <div class="row">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody class="table-group-divider align-text-bottom">
+                        <tr th:if="${items.isEmpty()}">
+                            <td colspan="7"> No Items Available</td>
+                        </tr>
+                        <tr th:each="item : ${items}">
+                            <th scope="row" th:text="${item.itemId}"></th>
+                            <td th:text="${item.name}"></td>
+                            <td th:text="${item.category.name}"></td>
+                            <td th:text="${item.description}"></td>
+                            <td th:text="${item.quantity}"></td>
+                            <td th:text="${item.price} + '€'"></td>
+                            <td>
+                                <form class="d-inline" th:action="@{/store/admin/deleteItem}" method="post">
+                                    <input type="hidden" name="id" th:value="${item.id}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">DELETE</button>
+                                </form>
+                                <form class="d-inline" th:action="@{/store/admin/updatePage}" method="post">
+                                    <input type="hidden" name="id" th:value="${item.id}">
+                                    <button type="submit" class="btn btn-sm btn-outline-success">EDIT</button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row justify-content-center">
+                    <span><a th:href="@{/store/cleanSession}" class="link-danger">Clean session</a></span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="mt-auto" th:insert="~{/fragments/footer :: footer}"></div>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: "/store/admin/getItemData",
+            type: "GET",
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                $("#message").text(data.message);
+            }
+        });
+    });
+</script>
 </body>
 </html>

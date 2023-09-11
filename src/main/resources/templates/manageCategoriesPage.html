@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Manage categories page</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}"/>
+</head>
+<body style="height: 100vh;" class="d-flex text-center">
+<div class="d-flex w-100 h-100 mx-auto flex-column">
+    <div class="mb-auto" th:insert="~{/fragments/header :: header}"></div>
+
+    <div class="container">
+        <main class="row">
+            <div class="col">
+                <div class="row">
+                    <h3>Category management</h3>
+                    <h5>Here you can manage you categories</h5>
+                </div>
+                <hr>
+                <div class="row container">
+                    <div class="col-3">
+                    </div>
+                    <div class="col-6">
+                        <ul>
+                            <li th:each="err : ${#fields.errors('createCategoryDto.*')}" th:text="${err}"
+                                class="text-danger"/>
+                        </ul>
+                        <hr>
+                        <form th:action="@{/store/admin/newCategory}" th:object="${createCategoryDto}" method="post"
+                              class="row">
+                            <div class="input-group">
+                                <label class="input-group-text" for="nameInput">Name</label>
+                                <input class="form-control" id="nameInput" type="text" th:field="*{name}"
+                                       name="createItemDto.name"
+                                       required/>
+                                <button type="submit" class="btn btn-dark">Add category</button>
+                            </div>
+                        </form>
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th scope="col">Id</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody class="table-group-divider align-text-bottom">
+                            <tr th:if="${categories.isEmpty()}">
+                                <td colspan="3"> No Categories Available</td>
+                            </tr>
+                            <tr th:each="cat : ${categories}">
+                                <th scope="row" th:text="${cat.categoryId}"></th>
+                                <td th:text="${cat.name}"></td>
+                                <td>
+                                    <form class="d-inline" th:action="@{/store/admin/deleteCategory}" method="post">
+                                        <input type="hidden" name="id" th:value="${cat.id}">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">DELETE</button>
+                                    </form>
+                                    <form class="d-inline" th:action="@{/store/admin/categoryUpdatePage}" method="post">
+                                        <input type="hidden" name="id" th:value="${cat.id}">
+                                        <button type="submit" class="btn btn-sm btn-outline-success">EDIT</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-3"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="mt-auto" th:insert="~{/fragments/footer :: footer}"></div>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: "/store/admin/getItemData",
+            type: "GET",
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                $("#message").text(data.message);
+            }
+        });
+    });
+</script>
+</body>
+</html>

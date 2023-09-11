@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" name="viewport" content="width=device-width, initial-scale=1, text/html">
+
+    <!-- Bootstrap css -->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/cartPage.css}">
+    <title>Cart page</title>
+</head>
+<body style="height: 100vh;" class="d-flex text-center">
+<div class="d-flex w-100 h-100 mx-auto flex-column">
+    <div class="mb-auto" th:insert="~{/fragments/header :: header}"></div>
+
+    <div class="container">
+        <main class="row">
+            <h1>Cart</h1>
+            <hr>
+            <h4>This is where you'll see and manage your chosen items!</h4>
+            <span sec:authorize="isAnonymous()" class="text-danger fw-bold">Before you are able to purchase you will have to SIGN IN</span>
+            <hr>
+            <table class="table table-hover" id="cartTable">
+                <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Unit price</th>
+                    <th scope="col">Total price</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody class="table-group-divider align-text-bottom">
+                <tr th:if="${cart.getCartItems().isEmpty()}">
+                    <td colspan="7"> No Items Available</td>
+                </tr>
+                <tr th:each="cartItem : ${cart.getCartItems()}">
+                    <th scope="row" th:text="${cartItem.cartItemId}"></th>
+                    <td th:text="${cartItem.item.name}"></td>
+                    <td th:text="${cartItem.item.category.name}"></td>
+                    <td th:id="'quantity' + ${cartItem.item.id}" th:text="${cartItem.quantity}"
+                        th:value="${cartItem.quantity}"></td>
+                    <td th:text="${cartItem.getItemPrice()} + '€'"></td>
+                    <td th:id="'itemTotal' + ${cartItem.item.id}" th:text="${cartItem.getTotal()} + '€'"></td>
+                    <td>
+                        <div class="d-inline">
+                            <input type="hidden" id="rowItemId" th:value="${cartItem.item.id}">
+                            <button class="btn btn-sm btn-dark" onclick="(() => {
+                                    let item_id = this.parentNode.querySelector('input[id=rowItemId]').value;
+                                    let qtty = parseInt(document.getElementById('quantity' + item_id).innerHTML);
+                                    document.getElementById('quantity' + item_id).innerHTML = (qtty + 1).toString();
+                                    document.getElementById('quantity' + item_id).value = (qtty + 1).toString();
+
+                                    $.ajax({
+                                        url: '/cart/cartItem/inc',
+                                        method: 'POST',
+                                        data: {
+                                            item_id: item_id,
+                                        },
+                                        success: (response) => {
+                                            document.getElementById('itemTotal' + item_id).innerHTML = response.itemTotal.toFixed(2) + '€';
+                                            document.getElementById('cartTotal').innerHTML = 'Cart total: ' + response.cartTotal.toFixed(2) + '€';
+                                        },
+                                        error: (error) => {
+                                            console.log(error);
+                                        }
+                                    });
+
+                                })()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                     class="bi bi-plus-lg" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                          d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+                                </svg>
+                            </button>
+                            <button class="btn btn-sm btn-secondary" onclick="(() =>{
+                                    let item_id = this.parentNode.querySelector('input[id=rowItemId]').value;
+                                    let row = document.getElementById('quantity'+item_id).parentElement;
+                                    let table = document.getElementById('cartTable');
+                                    let qtty = parseInt(document.getElementById('quantity' + item_id).innerHTML);
+
+                                    qtty -= 1;
+
+                                    document.getElementById('quantity' + item_id).innerHTML = qtty.toString();
+                                    document.getElementById('quantity' + item_id).value = qtty.toString();
+
+                                    $.ajax({
+                                        url: '/cart/cartItem/dec',
+                                        method: 'post',
+                                        data: {
+                                            item_id: item_id,
+                                        },
+                                        success: (response) => {
+                                            document.getElementById('itemTotal' + item_id).innerHTML = response.itemTotal.toFixed(2) + '€';
+                                            document.getElementById('cartTotal').innerHTML = 'Cart total: ' + response.cartTotal.toFixed(2) + '€';
+
+                                            if (response.cartTotal === 0.0) {
+                                                document.getElementById('purchaseButton').remove();
+                                            }
+
+                                            if(qtty === 0) {
+                                                row.remove();
+                                            }
+                                        },
+                                        error: (error) => {
+                                            console.log(error);
+                                        }
+                                    });
+                                })()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                     class="bi bi-dash-lg" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                          d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
+                                </svg>
+                            </button>
+                            <button class="btn btn-sm btn-danger text-center" onclick="(() => {
+                                    let item_id = this.parentNode.querySelector('input[id=rowItemId]').value;
+                                    let row = document.getElementById('quantity'+item_id).parentElement;
+
+                                    $.ajax({
+                                        url: '/cart/cartItem/remove',
+                                        method: 'post',
+                                        data: {
+                                            item_id: item_id,
+                                        },
+                                        success: (response) => {
+                                            document.getElementById('cartTotal').innerHTML = 'Cart total: ' + response.cartTotal.toFixed(2) + '€';
+
+                                            if (response.cartTotal === 0.0) {
+                                                document.getElementById('purchaseButton').remove();
+                                            }
+                                            document.getElementById('lblCartCount').innerHTML = parseInt(document.getElementById('lblCartCount').innerHTML) - 1;
+                                            row.remove();
+                                        },
+                                        error: (error) => {
+                                            console.log(error);
+                                        }
+                                    });
+                                })()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                     class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                    <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <hr>
+            <div class="row">
+                <h3 id="cartTotal" th:text="'Cart total: ' + ${cart.totalPrice} + '€'"></h3>
+            </div>
+            <div class="row" th:if="${!cart.getCartItems().isEmpty()}">
+                <form th:action="@{/auth/login}" method="get" sec:authorize="isAnonymous()">
+                    <button type="submit" id="purchaseButton" class="btn btn-dark">Sign in to purchase</button>
+                </form>
+                <form th:action="@{/purchase/get}" method="get" sec:authorize="isAuthenticated()">
+                    <button type="submit" id="purchaseButton" class="btn btn-dark">Purchase</button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <div class="mt-auto" th:insert="~{/fragments/footer :: footer}"></div>
+</div>
+<script th:src="@{/webjars/jquery/jquery.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
+</body>
+</html>

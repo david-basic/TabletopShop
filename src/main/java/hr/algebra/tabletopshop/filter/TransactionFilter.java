@@ -12,7 +12,6 @@ import java.io.IOException;
 @Component
 @Order(1)
 public class TransactionFilter implements Filter {
-    
     private Logger logger = LoggerFactory.getLogger(TransactionFilter.class);
     
     @Override
@@ -22,6 +21,4 @@ public class TransactionFilter implements Filter {
         chain.doFilter(request, response);
         logger.info("Committing a transaction for req : {}", req.getRequestURI());
     }
-    
-    // other methods
 }

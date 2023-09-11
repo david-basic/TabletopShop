@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Update item page</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}"/>
+</head>
+<body style="height: 100vh;" class="d-flex text-center">
+<div class="d-flex w-100 h-100 mx-auto flex-column">
+    <div class="mb-auto" th:insert="~{/fragments/header :: header}"></div>
+
+    <div class="container">
+        <main class="row">
+            <div class="col">
+                <div class="row">
+                    <h3>Update item</h3>
+                </div>
+                <div class="row container">
+                    <ul>
+                        <li th:each="err : ${#fields.errors('updateItemDto.*')}" th:text="${err}" class="text-danger"/>
+                    </ul>
+                    <hr>
+                    <form th:action="@{/store/admin/updateItem}" th:object="${updateItemDto}" method="post" class="row g-3">
+                        <input type="hidden" name="updateItemDto.id" th:field="*{id}">
+                        <div class="col-md-6">
+                            <label class="form-label" for="nameInput">Name</label>
+                            <input class="form-control" id="nameInput" type="text" th:field="*{name}" name="updateItemDto.name"
+                                   required/>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="categoryInput" class="form-label">Category</label>
+                            <select id="categoryInput" class="form-select" th:field="*{idCategory}">
+                                <option th:each="category : ${categories}"
+                                        th:value="${category.id}" th:text="${category.name}" >
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="descriptionInput" class="form-label">Description</label>
+                            <input class="form-control" id="descriptionInput" type="text" th:field="*{description}"
+                                   name="updateItemDto.description" required/>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="quantityInput" class="form-label">Quantity</label>
+                            <input class="form-control" id="quantityInput" type="text" th:field="*{quantity}"
+                                   name="updateItemDto.quantity" required/>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="priceInput" class="form-label">Price</label>
+                            <input class="form-control" id="priceInput" type="text" th:field="*{price}"
+                                   name="updateItemDto.price" required/>
+                        </div>
+                        <div class="col-12 justify-content-center">
+                            <button type="submit" class="btn btn-dark">Update item</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="mt-auto" th:insert="~{/fragments/footer :: footer}"></div>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
+</body>
+</html>

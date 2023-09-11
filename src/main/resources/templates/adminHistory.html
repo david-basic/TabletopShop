@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Store history page</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}"/>
+
+    <!-- Include Bootstrap Datepicker CSS -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+</head>
+<body style="height: 100vh;" class="d-flex text-center">
+<div class="d-flex w-100 h-100 mx-auto flex-column">
+    <div class="mb-auto" th:insert="~{/fragments/header :: header}"></div>
+
+    <div class="container">
+        <main class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="row">
+                        <h3>Store history page</h3>
+                        <h5>Here you can browse logins of users and their purchases</h5>
+                    </div>
+                    <br>
+                </div>
+                <hr>
+                <div class="col-12 mb-3 justify-content-center">
+                    <form th:action="@{/store/admin/userLoginsBrowse}" method="get">
+                        <button type="submit" class="btn btn-dark">Browse user logins</button>
+                    </form>
+                </div>
+                <hr>
+                <br>
+                <div class="col-12 justify-content-center">
+                    <h5>User purchases table</h5>
+                </div>
+                <div class="row justify-content-end">
+                    <div class="col-5">
+                        <form th:action="@{/store/admin/userHistory}" method="post">
+                            <div class="input-group">
+                                <label class="input-group-text" for="userSelect">Filter by user...</label>
+                                <input type="search" class="form-control" placeholder="Search..." id="searchInput"
+                                       onkeyup="filterFunction()">
+                                <select class="form-select" id="userSelect" name="selectedUser">
+                                    <option th:value="0" th:text="all"></option>
+                                    <option th:each="usr : ${allUsers}"
+                                            th:value="${usr.id}" th:text="${usr.username}">
+                                    </option>
+                                </select>
+                                <button type="submit" class="btn btn-outline-dark">Filter</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-5">
+                        <form th:action="@{/store/admin/userHistoryByDate}" method="post" th:object="${dateRangeDto}">
+                            <div class="input-group">
+                                <label class="input-group-text">Filter by date...</label>
+                                <input type="text" class="form-control" id="startDate" th:field="*{startDate}"
+                                       data-provide="datepicker" placeholder="Start date..." required>
+                                <input type="text" class="form-control" id="endDate" th:field="*{endDate}"
+                                       data-provide="datepicker" placeholder="End date..." required>
+                                <button type="submit" class="btn btn-outline-dark">Filter</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Buyer name</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Payment method</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody class="table-group-divider align-text-bottom">
+                        <tr th:if="${purchasesToDisplay.isEmpty()}">
+                            <td colspan="7"> No purchases Available</td>
+                        </tr>
+                        <tr th:each="pur : ${purchasesToDisplay}">
+                            <th scope="row" th:text="${pur.purchaseId}"></th>
+                            <td th:text="${pur.user.username}"></td>
+                            <td th:text="${pur.firstName} + ' ' + ${pur.lastName}"></td>
+                            <td th:text="${pur.createdAt}"></td>
+                            <td th:text="${pur.paymentMethod.getDisplayName()}"></td>
+                            <td th:text="${pur.purchaseTotal} + '€'"></td>
+                            <td>
+                                <form class="d-inline" th:action="@{/store/purchaseDetails}" method="post">
+                                    <input type="hidden" name="id" th:value="${pur.id}">
+                                    <button type="submit" class="btn btn-sm btn-outline-success">DETAILS</button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="mt-auto" th:insert="~{/fragments/footer :: footer}"></div>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
+<!-- Include Bootstrap Datepicker JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script th:inline="javascript">
+    function filterFunction() {
+        // Get the input value and select element
+        let input = document.getElementById('searchInput');
+        let select = document.getElementById('userSelect');
+        let filter = input.value.toLowerCase();
+
+        // Get all options in the select element
+        let options = select.getElementsByTagName('option');
+
+        // Loop through the options and hide/show based on the filter
+        for (let i = 0; i < options.length; i++) {
+            let option = options[i];
+            let text = option.textContent.toLowerCase();
+
+            if (text.includes(filter) || filter === 'all') {
+                option.style.display = 'block';
+            } else {
+                option.style.display = 'none';
+            }
+        }
+
+        // Select the first visible option by default
+        let selectedOption = select.querySelector('option[style="display: block;"]');
+        if (selectedOption) {
+            selectedOption.selected = true;
+        }
+    }
+</script>
+</body>
+</html>
